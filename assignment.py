@@ -15,6 +15,13 @@ question_users = {
         "ENERGY_USAGE_FORMULA": "((ENERGY_USAGE_QUESTION_1 * 12) * (0.0005))+ ((ENERGY_USAGE_QUESTION_2 * 12) * (0.0053)) + ((ENERGY_USAGE_QUESTION_3 * 12) * (2.32))",
         # "ENERGY_USAGE_RESULT": calculate_energy_usage
         },
+        "WASTE": {
+        "WASTE_QUESTION_1": "How much waste do you generate per month in kilograms?",
+        "WASTE_QUESTION_2": "How much of that waste is recycled or composted (in percentage)?",
+        # "WASTE_FORMULA": "((total_waste_generated_per_month) * (12)) * (0.57 - recycling_or_composting_percentage)",
+        "WASTE_FORMULA": "((WASTE_QUESTION_1) * (12)) * ((57 - WASTE_QUESTION_2)/100)",
+        # "WASTE_RESULT": calculate_waste
+        },
 }; 
 
 

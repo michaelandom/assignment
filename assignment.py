@@ -33,6 +33,24 @@ question_users = {
         # "WASTE_RESULT": calculate_business_travel
         },
 }; 
+def helper(dictionary,search_key):
+   new_dictionary= {}
+   for key, value in dictionary.items():
+        if search_key in key:
+            new_dictionary[key] = value
+   return new_dictionary 
+    
+def section_not_completed(dictionary):
+    question_count =0
+    formula_count = 0
+    for key, _ in dictionary.items():
+        if "FORMULA" in key:
+            formula_count+=1
+        elif "QUESTION" in key:
+            question_count+=1
+    if formula_count==1 and question_count>0:
+        return False
+    return True
 
 def ask():
     section_answers = {}

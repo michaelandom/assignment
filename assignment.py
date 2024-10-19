@@ -55,14 +55,14 @@ def section_not_completed(dictionary):
 def ask():
     section_answers = {}
     total = 0
-    for question_user in question_users:
-        if section_not_completed(question_users[question_user]):
-            print(f'{question_user} section is not completed \n')
+    for section in question_users:
+        if section_not_completed(question_users[section]):
+            print(f'{section} section is not completed \n')
             continue
-        print(f'{question_user} section \n')
-        formula= question_users[question_user][f"{question_user}_FORMULA"]
-        section_questions= helper(question_users[question_user],"_QUESTION_")
-        print(f'{question_user} section has {len(section_questions)} questions \n')
+        print(f'{section} section \n')
+        formula= question_users[section][f"{section}_FORMULA"]
+        section_questions= helper(question_users[section],"_QUESTION_")
+        print(f'{section} section has {len(section_questions)} questions \n')
         for key, value in section_questions.items():
             while True:
                 try:
@@ -74,11 +74,11 @@ def ask():
                     print("That's not a valid response. Please enter a number.")
         try:
             result = round(eval(formula), 2)
-            section_answers[question_user] = result
+            section_answers[section] = result
             total+=result;
-            print(f"The result of the {question_user} is:", result, "kgCO2")
+            print(f"The result of the {section} is:", result, "kgCO2")
         except Exception as e:
-            print(f"Error in evaluating the formula for {question_user}:", e)  
+            print(f"Error in evaluating the formula for {section}:", e)  
         print("\n\n")
     section_answers["TOTAL"] = round(total,2);
     print(f"{HEADER_COLOR}{'Category':<20} {'CO2 (kg)':<15} {'Time Frame':<15} {RESET_COLOR}")

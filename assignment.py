@@ -3,7 +3,6 @@ def calculate_energy_usage():
     pass
 def calculate_waste():
     pass
-
 def calculate_business_travel():
     pass  
 HEADER_COLOR = "\033[95m"  
@@ -66,9 +65,9 @@ def ask():
         for key, value in section_questions.items():
             while True:
                 try:
-                    response =int(input(f"{value} "))
+                    response =int(input(f"{value} {HEADER_COLOR}"))
                     formula = formula.replace(key, f"{response}")
-                    print("\n")
+                    print(f"{RESET_COLOR}\n")
                     break
                 except ValueError:
                     print("That's not a valid response. Please enter a number.")

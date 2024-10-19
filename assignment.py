@@ -5,7 +5,10 @@ def calculate_waste():
     pass
 
 def calculate_business_travel():
-    pass    
+    pass  
+HEADER_COLOR = "\033[95m"  
+DATA_COLOR = "\033[92m"     
+RESET_COLOR = "\033[0m" 
 question_users = {
     "ENERGY_USAGE": {
         "ENERGY_USAGE_QUESTION_1": "What is your average monthly electricity bill in euros?",
@@ -31,10 +34,45 @@ question_users = {
         },
 }; 
 
-def main():
-    pass
+def ask():
+    section_answers = {}
+    total = 0
+    for question_user in question_users:
+        if section_not_completed(question_users[question_user]):
+            print(f'{question_user} section is not completed \n')
+            continue
+        print(f'{question_user} section \n')
+        formula= question_users[question_user][f"{question_user}_FORMULA"]
+        section_questions= helper(question_users[question_user],"_QUESTION_")
+        print(f'{question_user} section has {len(section_questions)} questions \n')
+        for key, value in section_questions.items():
+            while True:
+                try:
+                    response =int(input(f"{value} "))
+                    formula = formula.replace(key, f"{response}")
+                    print("\n")
+                    break
+                except ValueError:
+                    print("That's not a valid response. Please enter a number.")
+        try:
+            result = round(eval(formula), 2)
+            section_answers[question_user] = result
+            total+=result;
+            print(f"The result of the {question_user} is:", result, "kgCO2")
+        except Exception as e:
+            print(f"Error in evaluating the formula for {question_user}:", e)  
+        print("\n\n")
+    section_answers["TOTAL"] = round(total,2);
+    print(f"{HEADER_COLOR}{'Category':<20} {'CO2 (kg)':<15} {'Time Frame':<15} {RESET_COLOR}")
+    print("-" * 50)
+    for key, value in section_answers.items():
+        print(f"{DATA_COLOR}{key:<20} {value:<15} {'in year':<15}{RESET_COLOR}")
+    print("-" * 50)
+    print("\n\n")
+
+
 
 
 
 if __name__== "__main__":
-    main()
+    ask()

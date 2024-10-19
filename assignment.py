@@ -22,6 +22,13 @@ question_users = {
         "WASTE_FORMULA": "((WASTE_QUESTION_1) * (12)) * ((57 - WASTE_QUESTION_2)/100)",
         # "WASTE_RESULT": calculate_waste
         },
+    "BUSINESS_TRAVEL": {
+        "BUSINESS_TRAVEL_QUESTION_1": "How many kilometers do your employees travel per year for business purposes?",
+        "BUSINESS_TRAVEL_QUESTION_2": "What is the average fuel efficiency of the vehicles used for business travel in liters per 100 kilometers?",
+        "BUSINESS_TRAVEL_FORMULA": "(BUSINESS_TRAVEL_QUESTION_1) * (1 / BUSINESS_TRAVEL_QUESTION_2) * (2.31)",
+        # "BUSINESS_TRAVEL_FORMULA": "(total_kilometers_traveled_per_year_for_business_purposes) * (1 / average_fuel_efficiency_in_L_per_100km) * (2.31)",
+        # "WASTE_RESULT": calculate_business_travel
+        },
 }; 
 
 

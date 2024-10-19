@@ -6,7 +6,8 @@ def calculate_waste():
 def calculate_business_travel():
     pass  
 HEADER_COLOR = "\033[95m"  
-DATA_COLOR = "\033[92m"     
+DATA_COLOR = "\033[92m"
+ERROR_COLOR = "\033[91m"     
 RESET_COLOR = "\033[0m" 
 question_users = {
     "ENERGY_USAGE": {
@@ -70,12 +71,12 @@ def ask():
                     print(f"{RESET_COLOR}\n")
                     break
                 except ValueError:
-                    print("That's not a valid response. Please enter a number.")
+                    print(f"{ERROR_COLOR}That's not a valid response. Please enter a number.{RESET_COLOR}\n")
         try:
             result = round(eval(formula), 2)
             section_answers[section] = result
             total+=result;
-            print(f"The result of the {section} is:", result, "kgCO2")
+            print(f"The result of the {section} is: {DATA_COLOR}{result} kgCO2 {RESET_COLOR}")
         except Exception as e:
             print(f"Error in evaluating the formula for {section}:", e)  
         print("\n\n")

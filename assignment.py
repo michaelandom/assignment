@@ -48,7 +48,7 @@ def section_not_completed(dictionary):
             formula_count+=1
         elif "_QUESTION_" in key.upper():
             question_count+=1
-    print(formula_count)
+    
     return not(formula_count==1 and question_count>0)
 
 def ask():

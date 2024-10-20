@@ -44,13 +44,12 @@ def section_not_completed(dictionary):
     question_count =0
     formula_count = 0
     for key, _ in dictionary.items():
-        if "FORMULA" in key.upper():
+        if  key.endswith("_FORMULA"):
             formula_count+=1
-        elif "QUESTION" in key.upper():
+        elif "_QUESTION_" in key.upper():
             question_count+=1
-    if formula_count==1 and question_count>0:
-        return False
-    return True
+    print(formula_count)
+    return not(formula_count==1 and question_count>0)
 
 def ask():
     section_answers = {}

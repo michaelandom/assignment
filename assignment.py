@@ -1,10 +1,3 @@
-
-def calculate_energy_usage():
-    pass
-def calculate_waste():
-    pass
-def calculate_business_travel():
-    pass  
 HEADER_COLOR = "\033[95m"  
 DATA_COLOR = "\033[92m"
 ERROR_COLOR = "\033[91m"     

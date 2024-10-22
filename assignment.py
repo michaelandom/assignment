@@ -8,22 +8,16 @@ question_users = {
         "ENERGY_USAGE_QUESTION_2": "What is your average monthly natural gas bill in euros?",
         "ENERGY_USAGE_QUESTION_3": "What is your average monthly fuel bill for transportation in euros?",
         "ENERGY_USAGE_FORMULA": "((ENERGY_USAGE_QUESTION_1 * 12) * (0.0005))+ ((ENERGY_USAGE_QUESTION_2 * 12) * (0.0053)) + ((ENERGY_USAGE_QUESTION_3 * 12) * (2.32))",
-        # "ENERGY_USAGE_FORMULA": "((monthly_electricity_bill * 12) * (0.0005))+ ((monthly_natural_gas_bill * 12) * (0.0053)) + ((monthly_fuel_bill * 12) * (2.32))",
-        # "ENERGY_USAGE_RESULT": calculate_energy_usage
         },
-        "WASTE": {
+    "WASTE": {
         "WASTE_QUESTION_1": "How much waste do you generate per month in kilograms?",
         "WASTE_QUESTION_2": "How much of that waste is recycled or composted (in percentage)?",
         "WASTE_FORMULA": "((WASTE_QUESTION_1) * (12)) * ((57 - WASTE_QUESTION_2)/100)",
-        # "WASTE_FORMULA": "((total_waste_generated_per_month) * (12)) * (0.57 - recycling_or_composting_percentage)",
-        # "WASTE_RESULT": calculate_waste
         },
     "BUSINESS_TRAVEL": {
         "BUSINESS_TRAVEL_QUESTION_1": "How many kilometers do your employees travel per year for business purposes?",
         "BUSINESS_TRAVEL_QUESTION_2": "What is the average fuel efficiency of the vehicles used for business travel in liters per 100 kilometers?",
         "BUSINESS_TRAVEL_FORMULA": "(BUSINESS_TRAVEL_QUESTION_1) * (1 / BUSINESS_TRAVEL_QUESTION_2) * (2.31)",
-        # "BUSINESS_TRAVEL_FORMULA": "(total_kilometers_traveled_per_year_for_business_purposes) * (1 / average_fuel_efficiency_in_L_per_100km) * (2.31)",
-        # "WASTE_RESULT": calculate_business_travel
         },
 }; 
 def helper(dictionary,search_key):
@@ -44,6 +38,14 @@ def section_not_completed(dictionary):
     
     return not(formula_count==1 and question_count>0)
 
+def printTable(section_answers):
+    print(f"{HEADER_COLOR}{'Category':<20} {'CO2 (kg)':<15} {'Time Frame':<15} {RESET_COLOR}")
+    print("-" * 50)
+    for key, value in section_answers.items():
+        print(f"{DATA_COLOR}{key:<20} {value:<15} {'in year':<15}{RESET_COLOR}")
+    print("-" * 50)
+    print("\n\n")
+
 def ask():
     section_answers = {}
     total = 0
@@ -59,11 +61,16 @@ def ask():
             while True:
                 try:
                     response =int(input(f"{value} {HEADER_COLOR}"))
+                    if response == 0 and key == 'BUSINESS_TRAVEL_QUESTION_2':
+                       raise Exception(f"{value} can not be zero")
                     formula = formula.replace(key, f"{response}")
                     print(f"{RESET_COLOR}\n")
                     break
                 except ValueError:
                     print(f"{ERROR_COLOR}That's not a valid response. Please enter a number.{RESET_COLOR}\n")
+                except:
+                    print(f"{ERROR_COLOR}Average fuel efficiency in L / 100km cant not be zero.{RESET_COLOR}\n")
+
         try:
             result = round(eval(formula), 2)
             section_answers[section] = result
@@ -72,13 +79,9 @@ def ask():
         except Exception as e:
             print(f"Error in evaluating the formula for {section}:", e)  
         print("\n\n")
-    section_answers["TOTAL"] = round(total,2);
-    print(f"{HEADER_COLOR}{'Category':<20} {'CO2 (kg)':<15} {'Time Frame':<15} {RESET_COLOR}")
-    print("-" * 50)
-    for key, value in section_answers.items():
-        print(f"{DATA_COLOR}{key:<20} {value:<15} {'in year':<15}{RESET_COLOR}")
-    print("-" * 50)
-    print("\n\n")
+    section_answers["TOTAL"] = round(total,2)
+    printTable(section_answers)
+    
 
 
 

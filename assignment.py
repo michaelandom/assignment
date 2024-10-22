@@ -18,12 +18,13 @@ question_users = {
         "BUSINESS_TRAVEL_QUESTION_1": "How many kilometers do your employees travel per year for business purposes?",
         "BUSINESS_TRAVEL_QUESTION_2": "What is the average fuel efficiency of the vehicles used for business travel in liters per 100 kilometers?",
         "BUSINESS_TRAVEL_FORMULA": "(BUSINESS_TRAVEL_QUESTION_1) * (1 / BUSINESS_TRAVEL_QUESTION_2) * (2.31)",
+        "BUSINESS_TRAVEL_QUESTION_2_VALIDATION": "BUSINESS_TRAVEL_QUESTION_2 != 0"
         },
 }; 
-def helper(dictionary,search_key):
+def getQuestion(dictionary,search_key):
    new_dictionary= {}
    for key, value in dictionary.items():
-        if search_key.upper() in key.upper():
+        if search_key.upper() in key.upper() and not key.endswith("_VALIDATION"):
             new_dictionary[key] = value
    return new_dictionary 
     
@@ -55,21 +56,24 @@ def ask():
             continue
         print(f'{section} section \n')
         formula= question_users[section][f"{section}_FORMULA"]
-        section_questions= helper(question_users[section],"_QUESTION_")
+        section_questions= getQuestion(question_users[section],"_QUESTION_")
         print(f'{section} section has {len(section_questions)} questions \n')
         for key, value in section_questions.items():
             while True:
                 try:
                     response =int(input(f"{value} {HEADER_COLOR}"))
-                    if response == 0 and key == 'BUSINESS_TRAVEL_QUESTION_2':
-                       raise Exception(f"{value} can not be zero")
+                    validation_key = (key + "_VALIDATION")
+                    if validation_key in question_users[section]  and not eval((question_users[section][validation_key].replace(key, f"{response}"))):
+                       print(f"{ERROR_COLOR}{response} is not a valid input {question_users[section][validation_key]} {RESET_COLOR}\n")
+                       raise Exception(f"{value}")
                     formula = formula.replace(key, f"{response}")
                     print(f"{RESET_COLOR}\n")
                     break
                 except ValueError:
                     print(f"{ERROR_COLOR}That's not a valid response. Please enter a number.{RESET_COLOR}\n")
                 except:
-                    print(f"{ERROR_COLOR}Average fuel efficiency in L / 100km cant not be zero.{RESET_COLOR}\n")
+                    pass
+                    # print(f"{ERROR_COLOR}Average fuel efficiency in L / 100km cant not be zero.{RESET_COLOR}\n")
 
         try:
             result = round(eval(formula), 2)

@@ -5,12 +5,14 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 import json
 import os
+from datetime import datetime
 
 HEADER_COLOR = "\033[95m"  
 DATA_COLOR = "\033[92m"
 ERROR_COLOR = "\033[91m"     
 RESET_COLOR = "\033[0m" 
 question_users = {}
+organization_name = ""
 def getQuestion(dictionary,search_key):
    new_dictionary= {}
    for key, value in dictionary.items():
@@ -41,9 +43,11 @@ def printTable(section_answers):
     print("\n\n")
 
 def createFolder(file_name):
-    folder_path = 'output'
-    pdf_filename = os.path.join(folder_path, file_name)
+    parent_folder = organization_name.lower().replace(' ', '_')
+    current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    folder_path = f"{parent_folder}/output_{current_datetime}"
     os.makedirs(folder_path, exist_ok=True)
+    pdf_filename = os.path.join(folder_path, file_name)
     return pdf_filename
 def createPie(section_answers):
     categories = [key for key in section_answers.keys() if key != "TOTAL"] 
@@ -130,11 +134,13 @@ def ask():
     
 
 def setUp():
-    global question_users
+    global question_users, organization_name
     json_file_path = "question.json"
     with open(json_file_path, 'r') as file:
         data_dict = json.load(file)
     question_users = data_dict
+    organization_name = input('Enter your organization name : ')
+    print("\n\n")
 
 
 

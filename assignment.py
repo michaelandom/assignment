@@ -4,6 +4,8 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 import json
+import os
+
 HEADER_COLOR = "\033[95m"  
 DATA_COLOR = "\033[92m"
 ERROR_COLOR = "\033[91m"     
@@ -38,6 +40,11 @@ def printTable(section_answers):
     print("-" * 50)
     print("\n\n")
 
+def createFolder(file_name):
+    folder_path = 'output'
+    pdf_filename = os.path.join(folder_path, file_name)
+    os.makedirs(folder_path, exist_ok=True)
+    return pdf_filename
 def createPie(section_answers):
     categories = [key for key in section_answers.keys() if key != "TOTAL"] 
     co2_emissions = [value for key, value in section_answers.items() if key != "TOTAL"]
@@ -60,12 +67,13 @@ def createPie(section_answers):
     table.scale(1.2, 1.2)
     pyplot.text(-25,3.5,recommendations_text)
     pyplot.subplots_adjust(bottom=0.35)
-    pdf_filename = "co2_emissions_pie_chart.pdf"
+    
+    pdf_filename = createFolder('co2_emissions_pie_chart.pdf')
     pyplot.savefig(pdf_filename, format='pdf')
     pyplot.close() 
     print(f"PDF '{pdf_filename}' created successfully.")
-
-    pdf_filename = "recommendations.pdf"
+    pdf_filename = createFolder('recommendations.pdf')
+    pyplot.savefig(pdf_filename, format='pdf')
     document = SimpleDocTemplate(pdf_filename, pagesize=letter)
     styles = getSampleStyleSheet()
     style_normal = styles['Normal']

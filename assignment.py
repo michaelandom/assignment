@@ -3,58 +3,12 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
+import json
 HEADER_COLOR = "\033[95m"  
 DATA_COLOR = "\033[92m"
 ERROR_COLOR = "\033[91m"     
 RESET_COLOR = "\033[0m" 
-question_users = {
-    "ENERGY_USAGE": {
-        "ENERGY_USAGE_QUESTION_1": "What is your average monthly electricity bill in euros?",
-        "ENERGY_USAGE_QUESTION_2": "What is your average monthly natural gas bill in euros?",
-        "ENERGY_USAGE_QUESTION_3": "What is your average monthly fuel bill for transportation in euros?",
-        "ENERGY_USAGE_FORMULA": "((ENERGY_USAGE_QUESTION_1 * 12) * (0.0005))+ ((ENERGY_USAGE_QUESTION_2 * 12) * (0.0053)) + ((ENERGY_USAGE_QUESTION_3 * 12) * (2.32))",
-        "ENERGY_USAGE_RECOMMENDATIONS": """
-Recommendations for Energy Usage Reducing CO2 Emissions:<br/>
-1. Upgrade Efficiency: Improve insulation, use ENERGY STAR appliances, switch to LED lighting.<br/>
-2. Smart Technology: Install smart thermostats, utilize energy monitoring systems.<br/>
-3. Behavioral Changes: Unplug devices when not in use, turn off lights and appliances.<br/>
-4. Renewable Energy: Install solar panels, explore small wind turbines.<br/>
-5. Optimize Heating/Cooling: Maintain HVAC systems, implement zoning.<br/>
-6. Water Heating: Insulate water heaters, set temperature to 120°F (49°C).<br/>
- """
-        },
-    "WASTE": {
-        "WASTE_QUESTION_1": "How much waste do you generate per month in kilograms?",
-        "WASTE_QUESTION_2": "How much of that waste is recycled or composted (in percentage)?",
-        "WASTE_FORMULA": "((WASTE_QUESTION_1) * (12)) * ((57 - WASTE_QUESTION_2)/100)",
-        "WASTE_RECOMMENDATIONS": """
-Recommendations for Waste Reducing CO2 Emissions:<br/>
-Reduce: Minimize single-use items (e.g., plastic bags, straws). Opt for durable products over disposable ones.<br/>
-Reuse: Repurpose containers and materials instead of discarding them. Donate items you no longer need rather than throwing them away.<br/>
-Recycle: Familiarize yourself with local recycling programs and guidelines. Ensure materials are clean and sorted properly before recycling.<br/>
-Compost: Start a compost bin for organic waste (e.g., food scraps, yard waste). Use compost to enrich soil and reduce landfill waste.<br/>
-Educate: Raise awareness about waste reduction in your community. Share tips and resources on sustainable practices.<br/>
-Purchase Wisely: Buy in bulk to reduce packaging waste. Choose products with minimal or recyclable packaging.<br/>
-Plan Meals: Create a meal plan to avoid food waste. Store food properly to extend its shelf life.<br/>
-"""
-        },
-    "BUSINESS_TRAVEL": {
-        "BUSINESS_TRAVEL_QUESTION_1": "How many kilometers do your employees travel per year for business purposes?",
-        "BUSINESS_TRAVEL_QUESTION_2": "What is the average fuel efficiency of the vehicles used for business travel in liters per 100 kilometers?",
-        "BUSINESS_TRAVEL_FORMULA": "(BUSINESS_TRAVEL_QUESTION_1) * (1 / BUSINESS_TRAVEL_QUESTION_2) * (2.31)",
-        "BUSINESS_TRAVEL_QUESTION_2_VALIDATION": "BUSINESS_TRAVEL_QUESTION_2 != 0",
-        "BUSINESS_TRAVEL_RECOMMENDATIONS":"""
-Recommendations for Business Travel Reducing CO2 Emissions:<br/>
-Travel Less: Utilize video conferencing to reduce travel needs. Combine multiple meetings into one trip.<br/>
-Sustainable Transportation: Opt for public transport over taxis. Use trains for shorter distances instead of flying.<br/>
-Eco-Friendly Accommodations: Select hotels with sustainability certifications. Support energy-saving practices.<br/>
-Reduce Single-Use Items: Bring reusable water bottles and utensils. Avoid plastic straws and bags.<br/>
-Plan Efficiently: Schedule meetings close together to minimize travel time. Use direct flights to reduce fuel consumption.<br/>
-Offset Carbon Footprint: Invest in carbon offset programs. Encourage the company to support sustainability initiatives.<br/>
-Educate Employees: Provide training on sustainable travel practices. Share resources for eco-friendly travel options.<br/>
-"""
-        },
-}; 
+question_users = {}
 def getQuestion(dictionary,search_key):
    new_dictionary= {}
    for key, value in dictionary.items():
@@ -167,9 +121,16 @@ def ask():
     createPie(section_answers)
     
 
+def setUp():
+    global question_users
+    json_file_path = "question.json"
+    with open(json_file_path, 'r') as file:
+        data_dict = json.load(file)
+    question_users = data_dict
 
 
 
 
 if __name__== "__main__":
+    setUp()
     ask()

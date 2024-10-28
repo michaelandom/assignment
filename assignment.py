@@ -13,6 +13,7 @@ ERROR_COLOR = "\033[91m"
 RESET_COLOR = "\033[0m" 
 question_users = {}
 organization_name = ""
+current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 def getQuestion(dictionary,search_key):
    new_dictionary= {}
    for key, value in dictionary.items():
@@ -44,7 +45,6 @@ def printTable(section_answers):
 
 def createFolder(file_name):
     parent_folder = organization_name.lower().replace(' ', '_')
-    current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     folder_path = f"{parent_folder}/output_{current_datetime}"
     os.makedirs(folder_path, exist_ok=True)
     pdf_filename = os.path.join(folder_path, file_name)
@@ -53,12 +53,6 @@ def createPie(section_answers):
     categories = [key for key in section_answers.keys() if key != "TOTAL"] 
     co2_emissions = [value for key, value in section_answers.items() if key != "TOTAL"]
     time_frame = ['1 year'] * len(categories)
-    max_key, _ = max(
-    ((key, value) for key, value in section_answers.items() if key != "TOTAL"),
-    key=lambda item: item[1]
-    )
-    recommendations_text = question_users[max_key][f'{max_key}_RECOMMENDATIONS']
-
     pyplot.figure(figsize=(10, 10))
     pyplot.pie(co2_emissions, labels=categories, autopct='%1.1f%%', startangle=90)
     pyplot.title('CO2 Emissions by Category (in kg) - Yearly',pad=20)
@@ -69,15 +63,19 @@ def createPie(section_answers):
     table.auto_set_font_size(False)
     table.set_fontsize(12)
     table.scale(1.2, 1.2)
-    pyplot.text(-25,3.5,recommendations_text)
     pyplot.subplots_adjust(bottom=0.35)
-    
     pdf_filename = createFolder('co2_emissions_pie_chart.pdf')
     pyplot.savefig(pdf_filename, format='pdf')
     pyplot.close() 
     print(f"PDF '{pdf_filename}' created successfully.")
+
+def recommendation(section_answers):
+    max_key, _ = max(
+    ((key, value) for key, value in section_answers.items() if key != "TOTAL"),
+    key=lambda item: item[1]
+    )
+    recommendations_text = question_users[max_key][f'{max_key}_RECOMMENDATIONS']
     pdf_filename = createFolder('recommendations.pdf')
-    pyplot.savefig(pdf_filename, format='pdf')
     document = SimpleDocTemplate(pdf_filename, pagesize=letter)
     styles = getSampleStyleSheet()
     style_normal = styles['Normal']
@@ -131,6 +129,7 @@ def ask():
     section_answers["TOTAL"] = round(total,2)
     printTable(section_answers)
     createPie(section_answers)
+    recommendation(section_answers)
     
 
 def setUp():

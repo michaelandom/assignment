@@ -226,10 +226,8 @@ def createHistoryGraph(categories, df):
 #     pyplot.subplots_adjust(bottom=0.35)
 #     return pyplot
 def createChart(categories, co2_emissions):
-    # Calculate explode values to separate the largest segment
     explode = [0.1 if value == max(co2_emissions) else 0 for value in co2_emissions]
 
-    # Create the pie chart
     pyplot.figure(figsize=(10, 6))
     wedges, texts, autotexts = pyplot.pie(co2_emissions, 
                                            labels=categories, 
@@ -238,19 +236,16 @@ def createChart(categories, co2_emissions):
                                            explode=explode, 
                                            textprops={'fontsize': 10, 'color': 'black'})
 
-    # Improve label visibility
     for text in texts:
-        text.set_size(10)  # Set label font size
+        text.set_size(10)  
     for autotext in autotexts:
-        autotext.set_color('white')  # Change percentage text color for contrast
-        autotext.set_size(10)  # Set percentage font size
+        autotext.set_color('white') 
+        autotext.set_size(10)  
 
-    # Adding a legend
     pyplot.legend(wedges, categories, title="Categories", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
 
-    # Title and formatting
     pyplot.title(f'CO2 Emissions by Category (in kg) - Yearly for {organization_name}', pad=20)
-    pyplot.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle
+    pyplot.axis('equal') 
     pyplot.subplots_adjust(bottom=0.35)    
     return pyplot
 
@@ -259,35 +254,33 @@ def create_emissions_chart(data, scale_type='dual'):
     Create emissions chart with different scaling options
     scale_type: 'dual', 'log', or 'normalize'
     """
-    # Get latest data for each company
+   
     latest_data = data.sort_values('date').groupby('organization_id').last().reset_index()
     
-    # Sort companies by total emissions
+    
     ranked_data = latest_data.sort_values('TOTAL', ascending=False)
     
-    # Get dynamic categories
+    
     excluded_columns = ['organization_id', 'organization_name', 'TOTAL', 'date']
     categories = [col for col in ranked_data.columns if col not in excluded_columns]
     
-    # Create color map
+    
     colors = plt.cm.Set3(np.linspace(0, 1, len(categories)))
     
-    # Calculate value ranges for each category
+    
     value_ranges = {cat: ranked_data[cat].max() - ranked_data[cat].min() for cat in categories}
     max_values = {cat: ranked_data[cat].max() for cat in categories}
     
-    # Sort categories by maximum value
+    
     large_categories = [k for k, v in max_values.items() if v > np.mean(list(max_values.values()))]
     small_categories = [k for k, v in max_values.items() if v <= np.mean(list(max_values.values()))]
     
     plt.figure(figsize=(12, 6))
     
     if scale_type == 'dual' and large_categories and small_categories:
-        # Create primary axis
         ax1 = plt.gca()
         ax2 = ax1.twinx()
         
-        # Plot large values on primary axis
         width = 0.8 / len(categories)
         x = np.arange(len(ranked_data['organization_id']))
         
@@ -298,7 +291,6 @@ def create_emissions_chart(data, scale_type='dual'):
                    label=f"{category.replace('_', ' ').title()} (Primary)",
                    color=colors[idx])
         
-        # Plot small values on secondary axis
         for idx, category in enumerate(small_categories):
             ax2.bar(x + (idx + len(large_categories)) * width,
                    ranked_data[category],
@@ -306,23 +298,20 @@ def create_emissions_chart(data, scale_type='dual'):
                    label=f"{category.replace('_', ' ').title()} (Secondary)",
                    color=colors[idx + len(large_categories)])
         
-        # Customize axes
         ax1.set_xlabel('Companies')
         ax1.set_ylabel('Primary Scale Emissions')
         ax2.set_ylabel('Secondary Scale Emissions')
         
-        # Combine legends
         lines1, labels1 = ax1.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         ax1.legend(lines1 + lines2, labels1 + labels2, bbox_to_anchor=(1, 1))
         
     elif scale_type == 'log':
-        # Create log scale plot
         width = 0.8 / len(categories)
         x = np.arange(len(ranked_data['organization_id']))
         
         for idx, category in enumerate(categories):
-            if all(ranked_data[category] > 0):  # Log scale only works with positive values
+            if all(ranked_data[category] > 0): 
                 plt.bar(x + idx * width,
                        ranked_data[category],
                        width,
@@ -332,8 +321,7 @@ def create_emissions_chart(data, scale_type='dual'):
         plt.yscale('log')
         plt.legend(bbox_to_anchor=(1, 1))
         
-    else:  # normalize
-        # Normalize values to percentage of max for each category
+    else:  
         normalized_data = ranked_data.copy()
         for category in categories:
             max_val = ranked_data[category].max()
@@ -433,30 +421,30 @@ def setUp():
         print("\n\n")
         create_date()
     except:
-        print ("System issue\n")
+        print (f"{ERROR_COLOR}System issue\n{RESET_COLOR}")
         pass
 def create_date():
     global date_string
-    # Validate year input
+    
     while True:
         year = input('Enter the year of the data (YYYY, e.g., 2024): ')
         if len(year) == 4 and year.isdigit():
             year = int(year)
-            break  # Exit the loop if the year is valid
+            break  
         else:
-            print("Invalid input: Year must be a four-digit number (YYYY). Please try again.")
+            print(f"{ERROR_COLOR}Invalid input: Year must be a four-digit number (YYYY). Please try again. {RESET_COLOR}")
 
-    # Validate month input
+    
     while True:
         month = input('Enter the month of the year (1-12): ')
         try:
             month = int(month)
             if 1 <= month <= 12:
-                break  # Exit the loop if the month is valid
+                break  
             else:
-                print("Invalid input: Month must be between 1 and 12. Please try again.")
+                print(f"{ERROR_COLOR}Invalid input: Month must be between 1 and 12. Please try again.{RESET_COLOR}")
         except ValueError:
-            print("Invalid input: Month must be an integer. Please try again.")
+            print(f"{ERROR_COLOR}Invalid input: Month must be an integer. Please try again.{RESET_COLOR}")
     date_string = f"{year}-{month:02d}-01"
 
 

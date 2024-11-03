@@ -1,22 +1,23 @@
 {
-    "ENERGY_USAGE": {
-        "ENERGY_USAGE_QUESTION_1": "What is your average monthly electricity bill in euros?",
-        "ENERGY_USAGE_QUESTION_2": "What is your average monthly natural gas bill in euros?",
-        "ENERGY_USAGE_QUESTION_3": "What is your average monthly fuel bill for transportation in euros?",
-        "ENERGY_USAGE_FORMULA": "((ENERGY_USAGE_QUESTION_1 * 12) * (0.0005))+ ((ENERGY_USAGE_QUESTION_2 * 12) * (0.0053)) + ((ENERGY_USAGE_QUESTION_3 * 12) * (2.32))",
-        "ENERGY_USAGE_RECOMMENDATIONS": "Recommendations for Energy Usage Reducing CO2 Emissions:<br/>1.Upgrade Efficiency: Improve insulation, use ENERGY STAR appliances, switch to LED lighting.<br/>2. Smart Technology: Install smart thermostats, utilize energy monitoring systems.<br/>3. Behavioral Changes: Unplug devices when not in use, turn off lights and appliances.<br/>4. Renewable Energy: Install solar panels, explore small wind turbines.<br/>5. Optimize Heating/Cooling: Maintain HVAC systems, implement zoning.<br/>6. Water Heating: Insulate water heaters, set temperature to 120°F (49°C).<br/>"
-        },
-    "WASTE": {
-        "WASTE_QUESTION_1": "How much waste do you generate per month in kilograms?",
-        "WASTE_QUESTION_2": "How much of that waste is recycled or composted (in percentage)?",
-        "WASTE_FORMULA": "((WASTE_QUESTION_1) * (12)) * ((57 - WASTE_QUESTION_2)/100)",
-        "WASTE_RECOMMENDATIONS": "Recommendations for Waste Reducing CO2 Emissions:<br/>1. Reduce: Minimize single-use items (e.g., plastic bags, straws). Opt for durable products over disposable ones.<br/>2. Reuse: Repurpose containers and materials instead of discarding them. Donate items you no longer need rather than throwing them away.<br/>3. Recycle: Familiarize yourself with local recycling programs and guidelines. Ensure materials are clean and sorted properly before recycling.<br/>4. Compost: Start a compost bin for organic waste (e.g., food scraps, yard waste). Use compost to enrich soil and reduce landfill waste.<br/>5. Educate: Raise awareness about waste reduction in your community. Share tips and resources on sustainable practices.<br/>6. Purchase Wisely: Buy in bulk to reduce packaging waste. Choose products with minimal or recyclable packaging.<br/>7. Plan Meals: Create a meal plan to avoid food waste. Store food properly to extend its shelf life.<br/>"
-        },
-    "BUSINESS_TRAVEL": {
-        "BUSINESS_TRAVEL_QUESTION_1": "How many kilometers do your employees travel per year for business purposes?",
-        "BUSINESS_TRAVEL_QUESTION_2": "What is the average fuel efficiency of the vehicles used for business travel in liters per 100 kilometers?",
-        "BUSINESS_TRAVEL_FORMULA": "(BUSINESS_TRAVEL_QUESTION_1) * (1 / BUSINESS_TRAVEL_QUESTION_2) * (2.31)",
-        "BUSINESS_TRAVEL_QUESTION_2_VALIDATION": "BUSINESS_TRAVEL_QUESTION_2 != 0",
-        "BUSINESS_TRAVEL_RECOMMENDATIONS": "Recommendations for Business Travel Reducing CO2 Emissions:<br/>1. Travel Less: Utilize video conferencing to reduce travel needs. Combine multiple meetings into one trip.<br/>2. Sustainable Transportation: Opt for public transport over taxis. Use trains for shorter distances instead of flying.<br/>3. Eco-Friendly Accommodations: Select hotels with sustainability certifications. Support energy-saving practices.<br/>4. Reduce Single-Use Items: Bring reusable water bottles and utensils. Avoid plastic straws and bags.<br/>5. Plan Efficiently: Schedule meetings close together to minimize travel time. Use direct flights to reduce fuel consumption.<br/>6. Offset Carbon Footprint: Invest in carbon offset programs. Encourage the company to support sustainability initiatives.<br/>7. Educate Employees: Provide training on sustainable travel practices. Share resources for eco-friendly travel options.<br/>"
-        }
+  "ENERGY_USAGE": {
+    "ENERGY_USAGE_QUESTION_1": "What is your average monthly electricity bill in euros?",
+    "ENERGY_USAGE_QUESTION_2": "What is your average monthly natural gas bill in euros?",
+    "ENERGY_USAGE_QUESTION_3": "What is your average monthly fuel bill for transportation in euros?",
+    "ENERGY_USAGE_FORMULA": "((ENERGY_USAGE_QUESTION_1 * 12) * (0.0005))+ ((ENERGY_USAGE_QUESTION_2 * 12) * (0.0053)) + ((ENERGY_USAGE_QUESTION_3 * 12) * (2.32))",
+    "ENERGY_USAGE_RECOMMENDATIONS": "Recommendations for Energy Usage Reducing CO2 Emissions:\n1.Upgrade Efficiency: Improve insulation, use ENERGY STAR appliances, switch to LED lighting.\n2. Smart Technology: Install smart thermostats, utilize energy monitoring systems.\n3. Behavioral Changes: Unplug devices when not in use, turn off lights and appliances.\n4. Renewable Energy: Install solar panels, explore small wind turbines.\n5. Optimize Heating/Cooling: Maintain HVAC systems, implement zoning.\n6. Water Heating: Insulate water heaters, set temperature to 120°F (49°C).\n"
+  },
+  "WASTE": {
+    "WASTE_QUESTION_1": "How much waste do you generate per month in kilograms?",
+    "WASTE_QUESTION_2": "How much of that waste is recycled or composted (in percentage)?",
+    "WASTE_FORMULA": "((WASTE_QUESTION_1) * (12)) * ((57 - WASTE_QUESTION_2)/100)",
+    "WASTE_QUESTION_2_VALIDATION": "WASTE_QUESTION_2 > 0 and WASTE_QUESTION_2 <= 100",
+    "WASTE_RECOMMENDATIONS": "Recommendations for Waste Reducing CO2 Emissions:\n1. Reduce: Minimize single-use items (e.g., plastic bags, straws). Opt for durable products over disposable ones.\n2. Reuse: Repurpose containers and materials instead of discarding them. Donate items you no longer need rather than throwing them away.\n3. Recycle: Familiarize yourself with local recycling programs and guidelines. Ensure materials are clean and sorted properly before recycling.\n4. Compost: Start a compost bin for organic waste (e.g., food scraps, yard waste). Use compost to enrich soil and reduce landfill waste.\n5. Educate: Raise awareness about waste reduction in your community. Share tips and resources on sustainable practices.\n6. Purchase Wisely: Buy in bulk to reduce packaging waste. Choose products with minimal or recyclable packaging.\n7. Plan Meals: Create a meal plan to avoid food waste. Store food properly to extend its shelf life.\n"
+  },
+  "BUSINESS_TRAVEL": {
+    "BUSINESS_TRAVEL_QUESTION_1": "How many kilometers do your employees travel per year for business purposes?",
+    "BUSINESS_TRAVEL_QUESTION_2": "What is the average fuel efficiency of the vehicles used for business travel in liters per 100 kilometers?",
+    "BUSINESS_TRAVEL_FORMULA": "(BUSINESS_TRAVEL_QUESTION_1) * (1 / BUSINESS_TRAVEL_QUESTION_2) * (2.31)",
+    "BUSINESS_TRAVEL_QUESTION_2_VALIDATION": "BUSINESS_TRAVEL_QUESTION_2 != 0",
+    "BUSINESS_TRAVEL_RECOMMENDATIONS": "Recommendations for Business Travel Reducing CO2 Emissions:\n1. Travel Less: Utilize video conferencing to reduce travel needs. Combine multiple meetings into one trip.\n2. Sustainable Transportation: Opt for public transport over taxis. Use trains for shorter distances instead of flying.\n3. Eco-Friendly Accommodations: Select hotels with sustainability certifications. Support energy-saving practices.\n4. Reduce Single-Use Items: Bring reusable water bottles and utensils. Avoid plastic straws and bags.\n5. Plan Efficiently: Schedule meetings close together to minimize travel time. Use direct flights to reduce fuel consumption.\n6. Offset Carbon Footprint: Invest in carbon offset programs. Encourage the company to support sustainability initiatives.\n7. Educate Employees: Provide training on sustainable travel practices. Share resources for eco-friendly travel options.\n"
+  }
 }

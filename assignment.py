@@ -1,8 +1,4 @@
 import matplotlib.pyplot as pyplot
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
 import json
 import os
 from datetime import datetime

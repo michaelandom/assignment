@@ -71,7 +71,14 @@ def createPie(section_answers):
     plt.close()
     # other 
     plt.figure(1)
-    create_emissions_chart(df)
+    chart_options = ['dual', 'log', 'normalize']
+    chart_type = get_chart_type(chart_options)
+        
+    print(f"{HEADER_COLOR} Creating Report ... {RESET_COLOR}")
+
+    create_emissions_chart(df,chart_type)
+
+
     pdf_filename = createFolder('emissions_plot.png')
     plt.savefig(pdf_filename, dpi=300, bbox_inches='tight')
     plt.close()
@@ -108,6 +115,35 @@ def createPie(section_answers):
     print("PDF report has been generated as 'company_emissions_report.pdf'")
     print(f"PDF '{pdf_filename}' created successfully.")
 
+def get_chart_type(options=None):
+    if options is None:
+        options = ['dual', 'log', 'normalize']
+    
+    print("\nAvailable chart types:")
+    for idx, option in enumerate(options, 1):
+        print(f"{idx}. {option}")
+    
+    while True:
+        try:
+            choice = input("\nSelect chart type (enter number): ").strip()
+            
+            if not choice:
+                print(f"\n{DATA_COLOR}Using default chart type 'dual'{RESET_COLOR}")
+                return options[0] 
+            
+            index = int(choice) - 1
+            
+            if 0 <= index < len(options):
+                print(f"\n{DATA_COLOR}Using chart type {options[index]}{RESET_COLOR}")
+                return options[index]
+            else:
+                print(f"{ERROR_COLOR}Please enter a number between 1 and {len(options)}{RESET_COLOR}")
+                
+        except ValueError:
+            print(f"{ERROR_COLOR}Please enter a valid number{RESET_COLOR}")
+        except KeyboardInterrupt:
+            print(f"\n{ERROR_COLOR}Operation cancelled. Using default chart type 'dual'{RESET_COLOR}")
+            return options[0]
 def cleanUp():
     pdf_filename = createFolder('emissions_plot.png')
     os.remove(pdf_filename)
@@ -129,6 +165,7 @@ def recommendations(section_answers, pdf):
     recommendations_text = question_users[max_key][f'{max_key}_RECOMMENDATIONS']
     pdf.multi_cell(0, 10, recommendations_text)
     pdf.ln(5)
+    return pdf
 
 def summeryStatistics(ranked_data, pdf):
     pdf.add_page()
@@ -145,6 +182,7 @@ def summeryStatistics(ranked_data, pdf):
     ]
     for stat in summary_stats:
         pdf.cell(0, 10, stat, 0, 1)
+    return pdf
 
 def rankTable(categories, ranked_data, pdf):
     page_width = pdf.w - 20  # Total width minus margins
@@ -190,6 +228,7 @@ def rankTable(categories, ranked_data, pdf):
     pdf.ln(5)
     pdf.set_font('Arial', 'I', 8)
     pdf.cell(0, 10, 'Note: Companies are ranked by total emissions in descending order', 0, 1, 'L')
+    return pdf
 
 def createHistoryGraph(categories, df):
     df['date'] = pd.to_datetime(df['date'])

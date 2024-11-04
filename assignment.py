@@ -63,11 +63,8 @@ def createPie(section_answers):
     df = pd.DataFrame(answer_dict)
     latest_data = df.sort_values('date').groupby('organization_id').last().reset_index()
     ranked_data = latest_data.sort_values('TOTAL', ascending=False)
-    
-   
     plt.figure(1)
     createHistoryGraph(categories, df)
-
     # Show plot
     pdf_filename = createFolder('emissions_history.png')
     plt.savefig(pdf_filename, dpi=300, bbox_inches='tight')
@@ -94,25 +91,14 @@ def createPie(section_answers):
     pdf_filename = createFolder('emissions_plot.png')
     pdf.image(pdf_filename, x=10, w=190)
     pdf.ln(10)
-    # Add rankings table
     pdf.set_font('Arial', 'B', 12)
     pdf.cell(0, 10, 'Company Rankings by Total Emissions', 0, 1)
     pdf.ln(5)
-
-
-    # Table headers
     pdf.set_font('Arial', 'B', 10)
-
-    # Get dynamic categories (excluding certain columns)
     excluded_columns = ['organization_id', 'date']
     categories = [col for col in ranked_data.columns if col not in excluded_columns]
-
-    # Sort the data by TOTAL emissions in descending order
     ranked_data = ranked_data.sort_values('TOTAL', ascending=False).reset_index(drop=True)
-
-    # Calculate dynamic column widths
     rankTable(categories, ranked_data, pdf)
-    # Add summary statistics
     summeryStatistics(ranked_data, pdf)
     recommendations(section_answers, pdf)
     pdf_filename = createFolder('company_emissions_report.pdf')

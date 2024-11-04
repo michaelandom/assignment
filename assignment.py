@@ -111,6 +111,56 @@ def createPie(section_answers):
     ranked_data = ranked_data.sort_values('TOTAL', ascending=False).reset_index(drop=True)
 
     # Calculate dynamic column widths
+    rankTable(categories, ranked_data, pdf)
+    # Add summary statistics
+    summeryStatistics(ranked_data, pdf)
+    recommendations(section_answers, pdf)
+    pdf_filename = createFolder('company_emissions_report.pdf')
+    pdf.output(pdf_filename)
+    cleanUp()
+
+    print("PDF report has been generated as 'company_emissions_report.pdf'")
+    print(f"PDF '{pdf_filename}' created successfully.")
+
+def cleanUp():
+    pdf_filename = createFolder('emissions_plot.png')
+    os.remove(pdf_filename)
+    pdf_filename = createFolder('co2_emissions_pie_chart.png')
+    os.remove(pdf_filename)
+    pdf_filename = createFolder('emissions_history.png')
+    os.remove(pdf_filename)
+
+def recommendations(section_answers, pdf):
+    pdf.add_page()
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(0, 10, 'Recommendations', 0, 1)
+    pdf.ln(5)
+    pdf.set_font('Arial', '', 10)
+    max_key, _ = max(
+    ((key, value) for key, value in section_answers.items() if key != "TOTAL"),
+    key=lambda item: item[1]
+    )
+    recommendations_text = question_users[max_key][f'{max_key}_RECOMMENDATIONS']
+    pdf.multi_cell(0, 10, recommendations_text)
+    pdf.ln(5)
+
+def summeryStatistics(ranked_data, pdf):
+    pdf.add_page()
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(0, 10, 'Summary Statistics', 0, 1)
+    pdf.ln(5)
+
+    pdf.set_font('Arial', '', 10)
+    summary_stats = [
+        f"Total Emissions Across All Companies: {ranked_data['TOTAL'].sum():,.2f}",
+        f"Average Emissions per Company: {ranked_data['TOTAL'].mean():,.2f}",
+        f"Company with Highest Emissions: {ranked_data.iloc[0]['organization_name']} ({ranked_data.iloc[0]['TOTAL']:,.2f})",
+        f"Company with Lowest Emissions: {ranked_data.iloc[-1]['organization_name']} ({ranked_data.iloc[-1]['TOTAL']:,.2f})"
+    ]
+    for stat in summary_stats:
+        pdf.cell(0, 10, stat, 0, 1)
+
+def rankTable(categories, ranked_data, pdf):
     page_width = pdf.w - 20  # Total width minus margins
     rank_width = 15  # Fixed width for rank column
     company_width = 35  # Fixed width for company name
@@ -146,7 +196,7 @@ def createPie(section_answers):
             if category not in ['organization_name']:
                 value = row[category]
                 # Format numeric values with 2 decimal places
-                formatted_value = f"{value:.2f}" if isinstance(value, (int, float)) else str(value)
+                formatted_value = f"{value:,.2f}" if isinstance(value, (int, float)) else str(value)
                 pdf.cell(category_width, 10, formatted_value, 1)
         pdf.ln()
 
@@ -154,44 +204,6 @@ def createPie(section_answers):
     pdf.ln(5)
     pdf.set_font('Arial', 'I', 8)
     pdf.cell(0, 10, 'Note: Companies are ranked by total emissions in descending order', 0, 1, 'L')
-    # Add summary statistics
-    pdf.add_page()
-    pdf.set_font('Arial', 'B', 12)
-    pdf.cell(0, 10, 'Summary Statistics', 0, 1)
-    pdf.ln(5)
-
-    pdf.set_font('Arial', '', 10)
-    summary_stats = [
-        f"Total Emissions Across All Companies: {ranked_data['TOTAL'].sum():,.2f}",
-        f"Average Emissions per Company: {ranked_data['TOTAL'].mean():,.2f}",
-        f"Company with Highest Emissions: {ranked_data.iloc[0]['organization_name']} ({ranked_data.iloc[0]['TOTAL']:,.2f})",
-        f"Company with Lowest Emissions: {ranked_data.iloc[-1]['organization_name']} ({ranked_data.iloc[-1]['TOTAL']:,.2f})"
-    ]
-    for stat in summary_stats:
-        pdf.cell(0, 10, stat, 0, 1)
-    pdf.add_page()
-    pdf.set_font('Arial', 'B', 12)
-    pdf.cell(0, 10, 'Recommendations', 0, 1)
-    pdf.ln(5)
-    pdf.set_font('Arial', '', 10)
-    max_key, _ = max(
-    ((key, value) for key, value in section_answers.items() if key != "TOTAL"),
-    key=lambda item: item[1]
-    )
-    recommendations_text = question_users[max_key][f'{max_key}_RECOMMENDATIONS']
-    pdf.multi_cell(0, 10, recommendations_text)
-    pdf.ln(5)
-    pdf_filename = createFolder('company_emissions_report.pdf')
-    pdf.output(pdf_filename)
-    pdf_filename = createFolder('emissions_plot.png')
-    os.remove(pdf_filename)
-    pdf_filename = createFolder('co2_emissions_pie_chart.png')
-    os.remove(pdf_filename)
-    pdf_filename = createFolder('emissions_history.png')
-    os.remove(pdf_filename)
-
-    print("PDF report has been generated as 'company_emissions_report.pdf'")
-    print(f"PDF '{pdf_filename}' created successfully.")
 
 def createHistoryGraph(categories, df):
     df['date'] = pd.to_datetime(df['date'])

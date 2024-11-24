@@ -122,7 +122,10 @@ def create_pdf(section_answers):
 
 def add_chart_image_to_pdf_file():
     """
-    This function create a pdf and add the chart image to and return the pdf instabs
+      Creates a PDF and adds a chart image to it.
+
+    This function generates a PDF file and inserts the specified chart image, returning the PDF file path.
+
     """
     pdf = PDF()
     pdf.add_page()
@@ -145,7 +148,9 @@ def add_chart_image_to_pdf_file():
 
 def get_chart_type():
     """
-    this function ask user what time of cahrt do othe whant for better data vecleit 
+      Prompts the user to select a chart type for data visualization.
+
+    This function helps users choose the most suitable chart type to effectively represent their data.
     """
     options = ['dual', 'log', 'normalize']
     print("\nAvailable chart types:")
@@ -181,7 +186,9 @@ def get_chart_type():
 
 def clean_up():
     """
-    this function clean up the chat image file becouse we alredy add it to pdf file
+    Cleans up the chart image file after it has been added to the PDF.
+
+    This function deletes the chart image file to free up resources, as it is no longer needed.
     """
     pdf_filename = create_folder('emissions_plot.png')
     os.remove(pdf_filename)
@@ -193,7 +200,13 @@ def clean_up():
 
 def recommendations(section_answers, pdf):
     """
-    this function take a input section_answers, pdf it will give recommendations base on thw user ansuwer  
+    Generates recommendations based on user responses.
+
+    This function analyzes the provided section answers and the related PDF to offer tailored recommendations.
+
+    Parameters:
+    section_answers (list): User responses for different sections.
+    pdf (str): Path or URL to a related PDF.
     """
     pdf.add_page()
     pdf.set_font('Arial', 'B', 12)
@@ -214,7 +227,13 @@ def recommendations(section_answers, pdf):
 
 def summery_statistics(ranked_data, pdf):
     """
-    this function take  ranked_data, pdf and create as summer of the all orgnazation set and comber to the current orgnazation
+    Summarizes statistics for organizations based on ranked data.
+
+    Compares all organizations to the current one.
+
+    Parameters:
+    ranked_data (list): Ranked data for organizations.
+    pdf (str): Related PDF path or URL.
     """
     pdf.add_page()
     pdf.set_font('Arial', 'B', 12)
@@ -256,35 +275,28 @@ def rank_table(categories, ranked_data, pdf):
     headers = ['Rank', 'Company'] + [col.replace('_', ' ').title()
                                      for col in categories if col not in ['ORGANIZATION_NAME']]
 
-    # Print headers
     pdf.set_font('Arial', 'B', 10)
     for i, header in enumerate(headers):
         pdf.cell(col_widths[i], 10, str(header), 1)
     pdf.ln()
 
-    # Print data
     pdf.set_font('Arial', '', 10)
     for idx, row in ranked_data.iterrows():
         # Calculate rank (idx + 1 since indexing starts at 0)
         rank = idx + 1
 
-        # Print rank
         pdf.cell(col_widths[0], 10, str(rank), 1)
 
-        # Print company name
         pdf.cell(col_widths[1], 10, str(row['ORGANIZATION_NAME']), 1)
 
         # Print all other categories dynamically
         for category in categories:
             if category not in ['ORGANIZATION_NAME']:
                 value = row[category]
-                # Format numeric values with 2 decimal places
                 formatted_value = f"{value:,.2f}" if isinstance(
                     value, (int, float)) else str(value)
                 pdf.cell(category_width, 10, formatted_value, 1)
         pdf.ln()
-
-    # Optional: Add a note about sorting
     pdf.ln(5)
     pdf.set_font('Arial', 'I', 8)
     pdf.cell(
@@ -464,7 +476,9 @@ def create_emissions_chart(data, scale_type='dual'):
 
 def ask():
     """
-    This function handle the folw of the program check section and asking quatioin creating chat and pdf
+     Manages the program flow by checking sections and asking questions.
+
+    This function orchestrates user interactions, generates charts, and creates PDFs based on responses.
     """
     section_answers = {}
     total = 0
@@ -595,7 +609,7 @@ if __name__ == "__main__":
         ask()
     except KeyboardInterrupt:
         print('\nProgram interrupted by user')
-        exit(0)  
+        exit(0)
     except EOFError:
         print('\nEOF detected - program ending')
         exit(0)

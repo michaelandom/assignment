@@ -3,16 +3,15 @@ import os
 from datetime import datetime
 import pandas as pd
 import seaborn as sns
-from pdf_creater import PDF
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from pdf_creater import PDF
 
 HEADER_COLOR = "\033[95m"
 DATA_COLOR = "\033[92m"
 ERROR_COLOR = "\033[91m"
 RESET_COLOR = "\033[0m"
 DATE_STRING = None
-answer_dict = []
 question_users = {}
 ORGANIZATION_NAME = ""
 current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -78,7 +77,7 @@ def create_folder(file_name):
     return pdf_filename
 
 
-def create_pdf(section_answers):
+def create_pdf(section_answers,answer_dict):
     """
     This function takes user answers and creates a PDF that includes a 
     chart, a table, a summary, and recommendations. It also cleans up 
@@ -160,7 +159,6 @@ def get_chart_type():
     while True:
         try:
             choice = input("\nSelect chart type (enter number): ").strip()
-
             if not choice:
                 print(f"\n{DATA_COLOR}Using default chart type 'dual'{
                       RESET_COLOR}")
@@ -245,10 +243,10 @@ def summery_statistics(ranked_data, pdf):
         f"Total Emissions Across All Companies: {
             ranked_data['TOTAL'].sum():,.2f}",
         f"Average Emissions per Company: {ranked_data['TOTAL'].mean():,.2f}",
-        f"Company with Highest Emissions: {ranked_data.iloc[0]['ORGANIZATION_NAME']} ({
+        f"Company with Highest Emissions: {ranked_data.iloc[0]['organization_name']} ({
             ranked_data.iloc[0]['TOTAL']:,.2f})",
         f"Company with Lowest Emissions: {
-            ranked_data.iloc[-1]['ORGANIZATION_NAME']} ({ranked_data.iloc[-1]['TOTAL']:,.2f})"
+            ranked_data.iloc[-1]['organization_name']} ({ranked_data.iloc[-1]['TOTAL']:,.2f})"
     ]
     for stat in summary_stats:
         pdf.cell(0, 10, stat, 0, 1)
@@ -273,7 +271,7 @@ def rank_table(categories, ranked_data, pdf):
 
     # Create headers list
     headers = ['Rank', 'Company'] + [col.replace('_', ' ').title()
-                                     for col in categories if col not in ['ORGANIZATION_NAME']]
+                                     for col in categories if col not in ['organization_name']]
 
     pdf.set_font('Arial', 'B', 10)
     for i, header in enumerate(headers):
@@ -287,11 +285,11 @@ def rank_table(categories, ranked_data, pdf):
 
         pdf.cell(col_widths[0], 10, str(rank), 1)
 
-        pdf.cell(col_widths[1], 10, str(row['ORGANIZATION_NAME']), 1)
+        pdf.cell(col_widths[1], 10, str(row['organization_name']), 1)
 
         # Print all other categories dynamically
         for category in categories:
-            if category not in ['ORGANIZATION_NAME']:
+            if category not in ['organization_name']:
                 value = row[category]
                 formatted_value = f"{value:,.2f}" if isinstance(
                     value, (int, float)) else str(value)
@@ -381,15 +379,10 @@ def create_emissions_chart(data, scale_type='dual'):
     ranked_data = latest_data.sort_values('TOTAL', ascending=False)
 
     excluded_columns = ['organization_id',
-                        'ORGANIZATION_NAME', 'TOTAL', 'date']
+                        'organization_name', 'TOTAL', 'date']
     categories = [
         col for col in ranked_data.columns if col not in excluded_columns]
-
-    colors = np.linspace(0, 1, len(categories))
-
-    # value_ranges = {cat: ranked_data[cat].max(
-    # ) - ranked_data[cat].min() for cat in categories}
-
+    colors = plt.cm.tab20(np.linspace(0, 1, len(categories)))
     max_values = {cat: ranked_data[cat].max() for cat in categories}
 
     large_categories = [k for k, v in max_values.items(
@@ -518,36 +511,38 @@ def ask():
         print("\n\n")
     section_answers["TOTAL"] = round(total, 2)
     print_table(section_answers)
-    save_answers(section_answers)
-    create_pdf(section_answers)
+    answer_dict = save_answers(section_answers)
+    print(answer_dict)
+    create_pdf(section_answers,answer_dict)
 
 
-def save_answers(section_answers):
+def save_answers(section_answers) -> list:
     """
-    this function take the user answer and save ti in the gernal orhanzation dat set
+    This function takes the user's answers and saves them in the general organization dataset.
+    It ensures that user responses are recorded for future reference or analysis within the organization.
     """
-    global ORGANIZATION_NAME, answer_dict, DATE_STRING
     organization_id = ORGANIZATION_NAME.lower().replace(' ', '_')
     answers = {
         "organization_id": organization_id,
-        "ORGANIZATION_NAME": ORGANIZATION_NAME,
+        "organization_name": ORGANIZATION_NAME,
         "date": DATE_STRING,
         **section_answers
     }
     json_file_path = "answer.json"
     try:
-        with open(json_file_path, 'r') as file:
+        with open(json_file_path, 'r',encoding="utf-8") as file:
             answer_dict = json.load(file)
     except FileNotFoundError:
         answer_dict = []
     answer_dict = [entry for entry in answer_dict if not (entry.get(
         "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
     answer_dict.append(answers)
-    with open(json_file_path, 'w') as file:
+    with open(json_file_path, 'w',encoding="utf-8") as file:
         json.dump(answer_dict, file, indent=4)
+    return answer_dict
 
 
-def set_up():
+def set_up() -> dict:
     """ 
     Sets up the environment by loading questions from a JSON file and initializing
     global variables for organization and date.
@@ -560,14 +555,18 @@ def set_up():
         Exception: For any other issues encountered during setup.    
     """
     try:
-        global question_users, ORGANIZATION_NAME
+        variable = {}
         json_file_path = "question.json"
-        with open(json_file_path, 'r') as file:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
             data_dict = json.load(file)
-        question_users = data_dict
-        ORGANIZATION_NAME = input('Enter your organization name : ')
+        questions = data_dict
+        organization_name = input('Enter your organization name : ')
         print("\n\n")
-        create_date()
+        date_string = create_date()
+        variable["question_users"] = questions
+        variable["organization_name"] = organization_name
+        variable["date_string"] = date_string
+        return variable
     except FileNotFoundError:
         print(f"{ERROR_COLOR}Error: File '{
               json_file_path}' not found. Please ensure the file exists and try again.{RESET_COLOR}")
@@ -578,19 +577,15 @@ def set_up():
         print(f"{ERROR_COLOR}System issue: {e}{RESET_COLOR}")
 
 
-def create_date():
+def create_date() -> str:
     """
     Prompts the user for a year and month to create a 'YYYY-MM-DD' date string.
-
     - Validates a 4-digit year and sets the global 'DATE_STRING'.
-
     Global:
         DATE_STRING (str): e.g., '2024-01-01'.
-
     Exceptions:
         ValueError: For non-integer year input.
     """
-    global DATE_STRING
     while True:
         year = input('Enter the year of the date (YYYY, e.g., 2024): ')
         if len(year) == 4 and year.isdigit():
@@ -600,12 +595,19 @@ def create_date():
             print(
                 f"{ERROR_COLOR}Invalid input: Year must be a four-digit number (YYYY). Please try again.{RESET_COLOR}")
 
-    DATE_STRING = f"{year}-12-01"
+    return f"{year}-12-01"
 
 
 if __name__ == "__main__":
     try:
-        set_up()
+        system_variable = set_up()
+        required_keys = ["question_users", "organization_name", "date_string"]
+        for key in required_keys:
+            if key not in system_variable:
+                raise ValueError(f"Missing required variable: {key}")
+        question_users = system_variable["question_users"]
+        ORGANIZATION_NAME = system_variable["organization_name"]
+        DATE_STRING = system_variable["date_string"]
         ask()
     except KeyboardInterrupt:
         print('\nProgram interrupted by user')
@@ -613,3 +615,6 @@ if __name__ == "__main__":
     except EOFError:
         print('\nEOF detected - program ending')
         exit(0)
+    except ValueError as ve:
+        print(f'Error: {ve}')
+        exit(1)

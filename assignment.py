@@ -120,6 +120,7 @@ def create_pdf(section_answers):
     print("PDF report has been generated as 'company_emissions_report.pdf'")
     print(f"PDF '{pdf_filename}' created successfully.")
 
+
 def add_chart_image_to_pdf_file():
     """
     This function create a pdf and add the chart image to and return the pdf instabs
@@ -319,6 +320,7 @@ def create_history_graph(categories, df):
     plt.close()
     return plt
 
+
 def create_chart(categories, co2_emissions):
     """
     This function takes input categories and CO2 emissions, 
@@ -331,11 +333,11 @@ def create_chart(categories, co2_emissions):
 
     plt.figure(figsize=(10, 6))
     wedges, texts, auto_texts = plt.pie(co2_emissions,
-                                          labels=categories,
-                                          autopct='%1.1f%%',
-                                          startangle=90,
-                                          explode=explode,
-                                          textprops={'fontsize': 10, 'color': 'black'})
+                                        labels=categories,
+                                        autopct='%1.1f%%',
+                                        startangle=90,
+                                        explode=explode,
+                                        textprops={'fontsize': 10, 'color': 'black'})
 
     for text in texts:
         text.set_size(10)
@@ -344,7 +346,7 @@ def create_chart(categories, co2_emissions):
         auto_text.set_size(10)
 
     plt.legend(wedges, categories, title="Categories",
-                  loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+               loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
 
     plt.title(
         f'CO2 Emissions by Category (in kg) - Yearly for {ORGANIZATION_NAME}', pad=20)
@@ -591,4 +593,3 @@ def create_date():
 if __name__ == "__main__":
     set_up()
     ask()
-7

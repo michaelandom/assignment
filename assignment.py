@@ -2,7 +2,6 @@ import json
 import os
 from datetime import datetime
 import pandas as pd
-import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 from pdf_creater import PDF
@@ -77,7 +76,7 @@ def create_folder(file_name):
     return pdf_filename
 
 
-def create_pdf(section_answers,answer_dict):
+def create_pdf(section_answers, answer_dict):
     """
     This function takes user answers and creates a PDF that includes a 
     chart, a table, a summary, and recommendations. It also cleans up 
@@ -513,7 +512,7 @@ def ask():
     print_table(section_answers)
     answer_dict = save_answers(section_answers)
     print(answer_dict)
-    create_pdf(section_answers,answer_dict)
+    create_pdf(section_answers, answer_dict)
 
 
 def save_answers(section_answers) -> list:
@@ -530,14 +529,14 @@ def save_answers(section_answers) -> list:
     }
     json_file_path = "answer.json"
     try:
-        with open(json_file_path, 'r',encoding="utf-8") as file:
+        with open(json_file_path, 'r', encoding="utf-8") as file:
             answer_dict = json.load(file)
     except FileNotFoundError:
         answer_dict = []
     answer_dict = [entry for entry in answer_dict if not (entry.get(
         "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
     answer_dict.append(answers)
-    with open(json_file_path, 'w',encoding="utf-8") as file:
+    with open(json_file_path, 'w', encoding="utf-8") as file:
         json.dump(answer_dict, file, indent=4)
     return answer_dict
 

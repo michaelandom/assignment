@@ -1,11 +1,10 @@
-import matplotlib.pyplot as pyplot
 import json
 import os
 from datetime import datetime
-from pdf_creater import PDF
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+from pdf_creater import PDF
+import matplotlib.pyplot as plt
 import numpy as np
 
 HEADER_COLOR = "\033[95m"
@@ -591,5 +590,12 @@ def create_date():
 
 
 if __name__ == "__main__":
-    set_up()
-    ask()
+    try:
+        set_up()
+        ask()
+    except KeyboardInterrupt:
+        print('\nProgram interrupted by user')
+        exit(0)  
+    except EOFError:
+        print('\nEOF detected - program ending')
+        exit(0)

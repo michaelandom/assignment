@@ -69,7 +69,7 @@ def create_folder(file_name):
     parent folder under ORGANIZATION_NAME, along with an output directory 
     that includes a timestamp.
     """
-    parent_folder = ORGANIZATION_NAME.lower().replace(' ', '_')
+    parent_folder = get_organization_id()
     folder_path = f"{parent_folder}/output_{current_datetime}"
     os.makedirs(folder_path, exist_ok=True)
     pdf_filename = os.path.join(folder_path, file_name)
@@ -88,9 +88,6 @@ def create_pdf(section_answers, answer_dict):
     plt.figure(1)
     create_chart(categories, co2_emissions)
     df = pd.DataFrame(answer_dict)
-    latest_data = df.sort_values('date').groupby(
-        'organization_id').last().reset_index()
-    ranked_data = latest_data.sort_values('TOTAL', ascending=False)
     plt.figure(1)
     create_history_graph(categories, df)
     plt.figure(1)
@@ -104,12 +101,20 @@ def create_pdf(section_answers, answer_dict):
     pdf.ln(5)
     pdf.set_font('Arial', 'B', 10)
     excluded_columns = ['organization_id', 'date']
+    aggregate = {
+        'organization_name': 'first',
+        'date': 'last',
+        'TOTAL': 'sum'
+    }
+    aggregate.update({category: 'sum' for category in categories})
+    latest_data = df.sort_values('date').groupby(
+        'organization_id').agg(aggregate).reset_index()
+    ranked_data = latest_data.sort_values('TOTAL', ascending=False)
     categories_for_rank_table = [
         col for col in ranked_data.columns if col not in excluded_columns]
-    ranked_data = ranked_data.sort_values(
-        'TOTAL', ascending=False).reset_index(drop=True)
+    ranked_data = ranked_data.reset_index(drop=True)
     rank_table(categories_for_rank_table, ranked_data, pdf)
-    summery_statistics(ranked_data, pdf)
+    summery_statistics(ranked_data, df, pdf, categories)
     recommendations(section_answers, pdf)
     pdf_filename = create_folder('company_emissions_report.pdf')
     pdf.output(pdf_filename)
@@ -147,8 +152,7 @@ def add_chart_image_to_pdf_file():
 def get_chart_type():
     """
       Prompts the user to select a chart type for data visualization.
-
-    This function helps users choose the most suitable chart type to effectively represent their data.
+      This function helps users choose the most suitable chart type to effectively represent their data.
     """
     options = ['dual', 'log', 'normalize']
     print("\nAvailable chart types:")
@@ -222,23 +226,29 @@ def recommendations(section_answers, pdf):
     return pdf
 
 
-def summery_statistics(ranked_data, pdf):
+def summery_statistics(ranked_data, df, pdf, categories):
     """
-    Summarizes statistics for organizations based on ranked data.
-
-    Compares all organizations to the current one.
+    Provides comprehensive summary statistics for organizations' emissions data.
 
     Parameters:
-    ranked_data (list): Ranked data for organizations.
-    pdf (str): Related PDF path or URL.
-    """
-    pdf.add_page()
-    pdf.set_font('Arial', 'B', 12)
-    pdf.cell(0, 10, 'Summary Statistics', 0, 1)
-    pdf.ln(5)
+    ranked_data (pandas.DataFrame): Ranked emissions data for organizations
+    pdf (FPDF object): PDF document to add statistics to
 
+    Returns:
+    pdf (FPDF object): Updated PDF with detailed statistics
+    """
+    # Convert input to DataFrame if not already
+    if not isinstance(ranked_data, pd.DataFrame):
+        ranked_data = pd.DataFrame(ranked_data)
+    # Prepare PDF page
+    pdf.add_page()
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(0, 10, 'Comprehensive Emissions Summary Statistics', 0, 1)
+    pdf.ln(5)
     pdf.set_font('Arial', '', 10)
-    summary_stats = [
+
+    # Overall Summary Statistics
+    overall_stats = [
         f"Total Emissions Across All Companies: {
             ranked_data['TOTAL'].sum():,.2f}",
         f"Average Emissions per Company: {ranked_data['TOTAL'].mean():,.2f}",
@@ -247,9 +257,133 @@ def summery_statistics(ranked_data, pdf):
         f"Company with Lowest Emissions: {
             ranked_data.iloc[-1]['organization_name']} ({ranked_data.iloc[-1]['TOTAL']:,.2f})"
     ]
-    for stat in summary_stats:
+
+    # Add overall statistics to PDF
+    for stat in overall_stats:
         pdf.cell(0, 10, stat, 0, 1)
+
+    pdf.ln(5)
+
+    # Detailed Breakdown by Emission Category
+    for category in categories:
+        category_breakdown = [
+            f"{update_text(category)} - Total: {ranked_data[category].sum():,.2f}",
+            f"{update_text(category)} - Average: {ranked_data[category].mean():,.2f}",
+            f"{update_text(category)} - Highest Contributor: {ranked_data.loc[ranked_data[category].idxmax(
+            ), 'organization_name']} ({ranked_data[category].max():,.2f})",
+            f"{update_text(category)} - Lowest Contributor: {ranked_data.loc[ranked_data[category].idxmin(
+            ), 'organization_name']} ({ranked_data[category].min():,.2f})"
+        ]
+
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f'{update_text(category)} Detailed Analysis', 0, 1)
+        pdf.set_font('Arial', '', 10)
+
+        for stat in category_breakdown:
+            pdf.cell(0, 10, stat, 0, 1)
+        pdf.ln(5)
+    pdf.add_page()
+    current_org_id = get_organization_id()
+    current_org_data = df[df['organization_id']
+                          == current_org_id]
+    # Sort current organization's data by date
+    current_org_sorted = current_org_data.sort_values('date')
+
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(0, 10, f'Detailed Analysis for Organization: {
+             ORGANIZATION_NAME}', 0, 1)
+    pdf.ln(5)
+    pdf.set_font('Arial', '', 10)
+    # Skip if insufficient data
+    if len(current_org_sorted) < 2:
+        pdf.cell(
+            0, 10, 'Insufficient historical data for comprehensive analysis', 0, 1)
+        return pdf
+
+    # Key Metrics
+    total_emissions = current_org_sorted['TOTAL']
+    dates = current_org_sorted['date']
+
+    # Breakdown by Emission Categories
+    category_breakdown = {}
+    category_breakdown.update({category: current_org_sorted[category] for category in categories})
+
+    # Comparative Statistics
+    comparative_stats = [
+        f"Organization name: {ORGANIZATION_NAME}",
+        f"Total Historical Data Points: {len(current_org_sorted)}",
+        f"Date Range: {dates.min()} to {dates.max()}",
+        f"Lowest Total Emissions: {total_emissions.min(
+        ):,.2f} (on {dates.iloc[total_emissions.argmin()]})",
+        f"Highest Total Emissions: {total_emissions.max(
+        ):,.2f} (on {dates.iloc[total_emissions.argmax()]})"
+    ]
+
+    # Percentage Changes
+    pct_changes = total_emissions.pct_change() * 100
+
+    # Emission Category Analysis
+    category_stats = []
+    for category, values in category_breakdown.items():
+        category_pct_changes = values.pct_change() * 100
+        category_stats.extend([
+            f"{category} - Lowest: {values.min():,.2f}",
+            f"{category} - Highest: {values.max():,.2f}",
+            f"{category} - Average: {values.mean():,.2f}",
+            f"{category} - Change Volatility: {category_pct_changes.std():,.2f}%"
+        ])
+
+    # Performance Comparison
+    overall_mean = ranked_data['TOTAL'].mean()
+    org_mean = total_emissions.mean()
+    performance_comparison = [
+        f"Performance vs Sector Mean: {
+            'Above' if org_mean > overall_mean else 'Below'} "
+        f"(Difference: {abs(org_mean - overall_mean):,.2f}, "
+        f"{abs(org_mean - overall_mean) / overall_mean * 100:,.2f}%)",
+        f"Emissions Trend Volatility: {pct_changes.std():,.2f}%"
+    ]
+
+    # Additional Trend Analysis
+    trend_analysis = [
+        f"Most Recent Emissions Change: {pct_changes.iloc[-1]:,.2f}%",
+        f"Average Emissions Change: {pct_changes.mean():,.2f}%"
+    ]
+
+    # Comparative Context
+    percentile_rank = (total_emissions.rank(pct=True).iloc[-1]) * 100
+    comparative_context = [
+        f"Emissions Percentile Ranking: {percentile_rank:,.2f}%"
+    ]
+
+    # PDF Writing
+    sections = [
+        ("Organizational Overview", comparative_stats),
+        ("Category-wise Breakdown", category_stats),
+        ("Performance Comparison", performance_comparison),
+        ("Trend Analysis", trend_analysis),
+        ("Comparative Context", comparative_context)
+    ]
+
+    for section_title, section_stats in sections:
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, section_title, 0, 1)
+        pdf.set_font('Arial', '', 10)
+
+        for stat in section_stats:
+            pdf.cell(0, 10, stat, 0, 1)
+        pdf.ln(3)
     return pdf
+
+def update_text(original_text):
+    """ Replace underscores with spaces and convert to lowercase then title"""
+    updated_text = original_text.replace('_', ' ').lower()
+    updated_text = updated_text.title()
+    return updated_text
+
+def get_organization_id():
+    """ Get organization id from ORGANIZATION_NAME"""
+    return ORGANIZATION_NAME.lower().replace(' ', '_')
 
 
 def rank_table(categories, ranked_data, pdf):
@@ -307,7 +441,7 @@ def create_history_graph(categories, df):
     a chart displaying progress over the years.
     """
     df['date'] = pd.to_datetime(df['date'])
-    org_id = ORGANIZATION_NAME.lower().replace(' ', '_')
+    org_id = get_organization_id()
     org_data = df[df['organization_id'] == org_id]
     org_data = org_data.sort_values('date')
     plt.figure(figsize=(10, 5))
@@ -511,7 +645,6 @@ def ask():
     section_answers["TOTAL"] = round(total, 2)
     print_table(section_answers)
     answer_dict = save_answers(section_answers)
-    print(answer_dict)
     create_pdf(section_answers, answer_dict)
 
 
@@ -520,7 +653,7 @@ def save_answers(section_answers) -> list:
     This function takes the user's answers and saves them in the general organization dataset.
     It ensures that user responses are recorded for future reference or analysis within the organization.
     """
-    organization_id = ORGANIZATION_NAME.lower().replace(' ', '_')
+    organization_id = get_organization_id()
     answers = {
         "organization_id": organization_id,
         "organization_name": ORGANIZATION_NAME,

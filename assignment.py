@@ -267,8 +267,10 @@ def summery_statistics(ranked_data, df, pdf, categories):
     # Detailed Breakdown by Emission Category
     for category in categories:
         category_breakdown = [
-            f"{update_text(category)} - Total: {ranked_data[category].sum():,.2f}",
-            f"{update_text(category)} - Average: {ranked_data[category].mean():,.2f}",
+            f"{update_text(category)
+               } - Total: {ranked_data[category].sum():,.2f}",
+            f"{update_text(category)
+               } - Average: {ranked_data[category].mean():,.2f}",
             f"{update_text(category)} - Highest Contributor: {ranked_data.loc[ranked_data[category].idxmax(
             ), 'organization_name']} ({ranked_data[category].max():,.2f})",
             f"{update_text(category)} - Lowest Contributor: {ranked_data.loc[ranked_data[category].idxmin(
@@ -306,7 +308,8 @@ def summery_statistics(ranked_data, df, pdf, categories):
 
     # Breakdown by Emission Categories
     category_breakdown = {}
-    category_breakdown.update({category: current_org_sorted[category] for category in categories})
+    category_breakdown.update(
+        {category: current_org_sorted[category] for category in categories})
 
     # Comparative Statistics
     comparative_stats = [
@@ -375,11 +378,13 @@ def summery_statistics(ranked_data, df, pdf, categories):
         pdf.ln(3)
     return pdf
 
+
 def update_text(original_text):
     """ Replace underscores with spaces and convert to lowercase then title"""
     updated_text = original_text.replace('_', ' ').lower()
     updated_text = updated_text.title()
     return updated_text
+
 
 def get_organization_id():
     """ Get organization id from ORGANIZATION_NAME"""
@@ -463,13 +468,10 @@ def create_history_graph(categories, df):
     return plt
 
 
-def create_chart(categories, co2_emissions):
+def create_pie_chart(categories, co2_emissions, title):
     """
-    This function takes input categories and CO2 emissions, 
-    and creates a chart that compares the different categories 
-    for the organization.
+    Create a pie chart for the given categories and CO2 emissions.
     """
-    # plt.figure(figsize=(10, 10))
     explode = [0.1 if value == max(
         co2_emissions) else 0 for value in co2_emissions]
 
@@ -490,13 +492,43 @@ def create_chart(categories, co2_emissions):
     plt.legend(wedges, categories, title="Categories",
                loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
 
-    plt.title(
-        f'CO2 Emissions by Category (in kg) - Yearly for {ORGANIZATION_NAME}', pad=20)
+    plt.title(title, pad=20)
     plt.axis('equal')
     plt.subplots_adjust(bottom=0.35)
     pdf_filename = create_folder('co2_emissions_pie_chart.png')
     plt.savefig(pdf_filename, dpi=300, bbox_inches='tight')
     plt.close()
+    return plt
+
+
+def create_bar_chart(categories, co2_emissions, title):
+    """
+    Create a bar chart for the given categories and CO2 emissions.
+    """
+    plt.figure(figsize=(10, 6))
+    plt.bar(categories, co2_emissions, color='skyblue')
+    plt.title(title, pad=20)
+    plt.xlabel('Categories')
+    plt.ylabel('CO2 Emissions (kg)')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    pdf_filename = create_folder('co2_emissions_pie_chart.png')
+    plt.savefig(pdf_filename, dpi=300, bbox_inches='tight')
+    plt.close()
+    return plt
+
+
+def create_chart(categories, co2_emissions):
+    """
+    Create a chart (pie or bar) for the given categories and CO2 emissions.
+    """
+    title = f'CO2 Emissions by Category (in kg) - Yearly for {
+        ORGANIZATION_NAME}'
+    if any(value < 0 for value in co2_emissions):
+        print("Negative CO2 emissions detected. Creating a bar chart instead.")
+        plt = create_bar_chart(categories, co2_emissions, title)
+    else:
+        plt = create_pie_chart(categories, co2_emissions, title)
     return plt
 
 
@@ -603,10 +635,10 @@ def create_emissions_chart(data, scale_type='dual'):
 def ask():
     """
      Manages the program flow by checking sections and asking questions.
-
     This function orchestrates user interactions, generates charts, and creates PDFs based on responses.
     """
     section_answers = {}
+    response_by_section = {}
     total = 0
     for section in question_users:
         if section_not_completed(question_users[section]):
@@ -615,6 +647,7 @@ def ask():
         print(f'{section} section \n')
         formula = question_users[section][f"{section}_FORMULA"]
         section_questions = get_question(question_users[section], "_QUESTION_")
+        response_by_section[section] = {}
         print(f'{section} section has {len(section_questions)} questions \n')
         for key, value in section_questions.items():
             while True:
@@ -625,6 +658,7 @@ def ask():
                         print(f"{ERROR_COLOR}{response} is not a valid input {
                               question_users[section][validation_key]} {RESET_COLOR}\n")
                         raise ValueError(f"{value}")
+                    response_by_section[section][key] = response
                     formula = formula.replace(key, f"{response}")
                     print(f"{RESET_COLOR}\n")
                     break
@@ -639,13 +673,41 @@ def ask():
             total += result
             print(f"The result of the {section} is: {
                   DATA_COLOR}{result} kgCO2 {RESET_COLOR}")
-        except:
-            print(f"Error in evaluating the formula for {section}:", e)
-        print("\n\n")
+        except (SyntaxError, NameError, TypeError) as e:
+            print(f"Error in evaluating the formula for {section}: {e}")
+    print("\n\n")
     section_answers["TOTAL"] = round(total, 2)
     print_table(section_answers)
+    save_user_response(response_by_section)
     answer_dict = save_answers(section_answers)
     create_pdf(section_answers, answer_dict)
+
+
+def save_user_response(response_by_section):
+    """
+      This function takes the user's responses organized by section and saves them to a JSON file. 
+    This serves as a backup before processing the responses, ensuring we can retain original data 
+    in case of any future changes to the format. It also assists with auditing and can be useful 
+    if additional features or requirements are introduced later.
+    """
+    organization_id = get_organization_id()
+    response = {
+        "organization_id": organization_id,
+        "organization_name": ORGANIZATION_NAME,
+        "date": DATE_STRING,
+        **response_by_section
+    }
+    json_file_path = "response.json"
+    try:
+        with open(json_file_path, 'r', encoding="utf-8") as file:
+            responses_dict_list = json.load(file)
+    except FileNotFoundError:
+        responses_dict_list = []
+    responses_dict_list = [entry for entry in responses_dict_list if not (entry.get(
+        "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
+    responses_dict_list.append(response)
+    with open(json_file_path, 'w', encoding="utf-8") as file:
+        json.dump(responses_dict_list, file, indent=4)
 
 
 def save_answers(section_answers) -> list:

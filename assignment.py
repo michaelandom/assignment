@@ -5,7 +5,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pdf_creater import PDF
-
+from service_utility import ServiceUtility
+from multiprocessing import Pool
 HEADER_COLOR = "\033[95m"
 DATA_COLOR = "\033[92m"
 ERROR_COLOR = "\033[91m"
@@ -16,49 +17,17 @@ ORGANIZATION_NAME = ""
 current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 
-def get_question(dictionary, search_key):
-    """
-    This function takes an input dictionary and a search key, 
-    then retrieves and returns a list of questions from the dictionary 
-    that match the specified criteria.
-    """
-    new_dictionary = {}
-    for key, value in dictionary.items():
-        if search_key.upper() in key.upper() and not key.endswith("_VALIDATION"):
-            new_dictionary[key] = value
-    return new_dictionary
-
-
-def section_not_completed(dictionary):
-    """
-    This function takes an input dictionary and checks if the section 
-    is completed and available for the user.
-    """
-    question_count = 0
-    formula_count = 0
-    recommendation_count = 0
-    for key, _ in dictionary.items():
-        if key.endswith("_FORMULA"):
-            formula_count += 1
-        elif "_QUESTION_" in key.upper():
-            question_count += 1
-        elif key.endswith("_RECOMMENDATIONS"):
-            recommendation_count += 1
-
-    return not (formula_count == 1 and recommendation_count == 1 and question_count > 0)
-
-
 def print_table(section_answers):
     """
     This function takes user input and creates a formatted table 
     in the terminal with colored output.
     """
     print(f"{HEADER_COLOR}{'Category':<20} {
-          'CO2 (kg)':<15} {'Time Frame':<15} {RESET_COLOR}")
+        'CO2 (kg)':<15} {'Time Frame':<15} {RESET_COLOR}")
     print("-" * 50)
     for key, value in section_answers.items():
         print(f"{DATA_COLOR}{key:<20} {value:<15} {
-              'in year':<15}{RESET_COLOR}")
+            'in year':<15}{RESET_COLOR}")
     print("-" * 50)
     print("\n\n")
 
@@ -76,6 +45,7 @@ def create_folder(file_name):
     return pdf_filename
 
 
+@ServiceUtility.timer
 def create_pdf(section_answers, answer_dict):
     """
     This function takes user answers and creates a PDF that includes a 
@@ -226,6 +196,7 @@ def recommendations(section_answers, pdf):
     return pdf
 
 
+@ServiceUtility.memoize
 def summery_statistics(ranked_data, df, pdf, categories):
     """
     Provides comprehensive summary statistics for organizations' emissions data.
@@ -641,12 +612,13 @@ def ask():
     response_by_section = {}
     total = 0
     for section in question_users:
-        if section_not_completed(question_users[section]):
+        if ServiceUtility.section_not_completed(question_users[section]):
             print(f'{section} section is not completed \n')
             continue
         print(f'{section} section \n')
         formula = question_users[section][f"{section}_FORMULA"]
-        section_questions = get_question(question_users[section], "_QUESTION_")
+        section_questions = ServiceUtility.get_question(
+            question_users[section], "_QUESTION_")
         response_by_section[section] = {}
         print(f'{section} section has {len(section_questions)} questions \n')
         for key, value in section_questions.items():
@@ -767,7 +739,7 @@ def set_up() -> dict:
     except json.JSONDecodeError:
         print(f"{ERROR_COLOR}Error: Failed to parse JSON data from '{
               json_file_path}'. Please check the file format.{RESET_COLOR}")
-    except Exception as e:
+    except (SyntaxError, NameError, TypeError) as e:
         print(f"{ERROR_COLOR}System issue: {e}{RESET_COLOR}")
 
 
@@ -809,6 +781,6 @@ if __name__ == "__main__":
     except EOFError:
         print('\nEOF detected - program ending')
         exit(0)
-    except ValueError as ve:
-        print(f'Error: {ve}')
+    except (SyntaxError, NameError, TypeError) as e:
+        print(f'Error: {e}')
         exit(1)

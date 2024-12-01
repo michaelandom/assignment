@@ -238,18 +238,18 @@ def summery_statistics(ranked_data, df, pdf, categories):
     # Detailed Breakdown by Emission Category
     for category in categories:
         category_breakdown = [
-            f"{update_text(category)
+            f"{ServiceUtility.update_text(category)
                } - Total: {ranked_data[category].sum():,.2f}",
-            f"{update_text(category)
+            f"{ServiceUtility.update_text(category)
                } - Average: {ranked_data[category].mean():,.2f}",
-            f"{update_text(category)} - Highest Contributor: {ranked_data.loc[ranked_data[category].idxmax(
+            f"{ServiceUtility.update_text(category)} - Highest Contributor: {ranked_data.loc[ranked_data[category].idxmax(
             ), 'organization_name']} ({ranked_data[category].max():,.2f})",
-            f"{update_text(category)} - Lowest Contributor: {ranked_data.loc[ranked_data[category].idxmin(
+            f"{ServiceUtility.update_text(category)} - Lowest Contributor: {ranked_data.loc[ranked_data[category].idxmin(
             ), 'organization_name']} ({ranked_data[category].min():,.2f})"
         ]
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f'{update_text(category)} Detailed Analysis', 0, 1)
+        pdf.cell(0, 10, f'{ServiceUtility.update_text(category)} Detailed Analysis', 0, 1)
         pdf.set_font('Arial', '', 10)
 
         for stat in category_breakdown:
@@ -348,13 +348,6 @@ def summery_statistics(ranked_data, df, pdf, categories):
             pdf.cell(0, 10, stat, 0, 1)
         pdf.ln(3)
     return pdf
-
-
-def update_text(original_text):
-    """ Replace underscores with spaces and convert to lowercase then title"""
-    updated_text = original_text.replace('_', ' ').lower()
-    updated_text = updated_text.title()
-    return updated_text
 
 
 def get_organization_id():

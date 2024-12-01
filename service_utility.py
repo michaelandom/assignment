@@ -53,7 +53,12 @@ class ServiceUtility:
                 cache[key] = func(*args, **kwargs)
             return cache[key]
         return wrapper
-
+    @staticmethod
+    def update_text(original_text):
+        """ Replace underscores with spaces and convert to lowercase then title"""
+        updated_text = original_text.replace('_', ' ').lower()
+        updated_text = updated_text.title()
+        return updated_text
     @staticmethod
     def get_question(dictionary: dict, search_key: str) -> Optional[Dict[str, Any]]:
         """

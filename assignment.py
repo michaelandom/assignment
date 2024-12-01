@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pdf_creater import PDF
 from service_utility import ServiceUtility
-from multiprocessing import Pool
 HEADER_COLOR = "\033[95m"
 DATA_COLOR = "\033[92m"
 ERROR_COLOR = "\033[91m"
@@ -249,7 +248,8 @@ def summery_statistics(ranked_data, df, pdf, categories):
         ]
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f'{ServiceUtility.update_text(category)} Detailed Analysis', 0, 1)
+        pdf.cell(0, 10, f'{ServiceUtility.update_text(
+            category)} Detailed Analysis', 0, 1)
         pdf.set_font('Arial', '', 10)
 
         for stat in category_breakdown:
@@ -738,23 +738,33 @@ def set_up() -> dict:
 
 def create_date() -> str:
     """
-    Prompts the user for a year and month to create a 'YYYY-MM-DD' date string.
-    - Validates a 4-digit year and sets the global 'DATE_STRING'.
-    Global:
-        DATE_STRING (str): e.g., '2024-01-01'.
-    Exceptions:
-        ValueError: For non-integer year input.
+    Prompts the user for a year to create a 'YYYY-MM-DD' date string.
+    - Validates the year as a 4-digit number between 1800 and current year
+    - Sets the date to December 1st of the specified year
     """
     while True:
-        year = input('Enter the year of the date (YYYY, e.g., 2024): ')
-        if len(year) == 4 and year.isdigit():
+        try:
+            year = input(
+                'Enter the year of the date (YYYY, e.g., 2024): ').strip().replace('-', '')
+            if len(year) != 4 or not year.isdigit():
+                print(
+                    f"{ERROR_COLOR}Invalid input: Year must be a four-digit number (YYYY). Please try again.{
+                        RESET_COLOR}"
+                )
+                continue
             year = int(year)
-            break
-        else:
+            current_year = datetime.now().year
+            if year < 1800 or year > current_year:
+                print(
+                    f"{ERROR_COLOR}Invalid year: Year must be between 1800 and {
+                        current_year}. Please try again.{RESET_COLOR}"
+                )
+                continue
+            return f"{year}-12-01"
+        except ValueError:
             print(
-                f"{ERROR_COLOR}Invalid input: Year must be a four-digit number (YYYY). Please try again.{RESET_COLOR}")
-
-    return f"{year}-12-01"
+                f"{ERROR_COLOR}Invalid input. Please enter a valid four-digit year.{RESET_COLOR}"
+            )
 
 
 if __name__ == "__main__":

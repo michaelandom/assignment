@@ -360,16 +360,15 @@ def rank_table(categories, ranked_data, pdf):
     This function takes input categories and ranked data to create a PDF table 
     showing the organization's rank with total emissions in descending order.
     """
-    page_width = pdf.w - 20  # Total width minus margins
-    rank_width = 15  # Fixed width for rank column
-    company_width = 35  # Fixed width for company name
+    page_width = pdf.w - 20  
+    rank_width = 15  
+    company_width = 35  
     remaining_width = page_width - (rank_width + company_width)
     # -1 because company name is already accounted for
     category_width = remaining_width / (len(categories) - 1)
     # Create dynamic column widths list
     col_widths = [rank_width, company_width] + \
         [category_width] * (len(categories) - 1)
-    # Create headers list
     headers = ['Rank', 'Company'] + [col.replace('_', ' ').title()
                                      for col in categories if col not in ['organization_name']]
 

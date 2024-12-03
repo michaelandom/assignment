@@ -594,6 +594,28 @@ def create_emissions_chart(data, scale_type='dual'):
     return plt
 
 
+def save_user_response(response_by_section):
+    """
+      This function takes the user's responses organized by section and saves them to a JSON file. 
+    This serves as a backup before processing the responses, ensuring we can retain the original data 
+    in case of any future changes to the format. It also assists with auditing and can be useful 
+    if additional features or requirements are introduced later.
+    """
+    organization_id = get_organization_id()
+    response = {
+        "organization_id": organization_id,
+        "organization_name": ORGANIZATION_NAME,
+        "date": DATE_STRING,
+        **response_by_section
+    }
+    json_file_path = "response.json"
+    responses_dict_list = secure.decrypt(json_file_path)
+    responses_dict_list = [entry for entry in responses_dict_list if not (entry.get(
+        "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
+    responses_dict_list.append(response)
+    secure.encrypt(responses_dict_list, json_file_path)
+
+
 def ask():
     """
      Manages the program flow by checking sections and asking questions.
@@ -646,32 +668,6 @@ def ask():
     create_pdf(section_answers, answer_dict)
 
 
-def save_user_response(response_by_section):
-    """
-      This function takes the user's responses organized by section and saves them to a JSON file. 
-    This serves as a backup before processing the responses, ensuring we can retain original data 
-    in case of any future changes to the format. It also assists with auditing and can be useful 
-    if additional features or requirements are introduced later.
-    """
-    organization_id = get_organization_id()
-    response = {
-        "organization_id": organization_id,
-        "organization_name": ORGANIZATION_NAME,
-        "date": DATE_STRING,
-        **response_by_section
-    }
-    json_file_path = "response.json"
-    # with open(json_file_path, 'r', encoding="utf-8") as file:
-    #     responses_dict_list = json.load(file)
-    responses_dict_list = secure.decrypt(json_file_path)
-    responses_dict_list = [entry for entry in responses_dict_list if not (entry.get(
-        "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
-    responses_dict_list.append(response)
-    secure.encrypt(responses_dict_list, json_file_path)
-    # with open(json_file_path, 'w', encoding="utf-8") as file:
-    #     json.dump(responses_dict_list, file, indent=4)
-
-
 def save_answers(section_answers) -> list:
     """
     This function takes the user's answers and saves them in the general organization dataset.
@@ -685,18 +681,11 @@ def save_answers(section_answers) -> list:
         **section_answers
     }
     json_file_path = "answer.json"
-    try:
-        # with open(json_file_path, 'r', encoding="utf-8") as file:
-        #     answer_dict = json.load(file)
-        answer_dict = secure.decrypt(json_file_path)
-    except (SyntaxError, NameError, TypeError) as e:
-        answer_dict = []
+    answer_dict = secure.decrypt(json_file_path)
     answer_dict = [entry for entry in answer_dict if not (entry.get(
         "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
     answer_dict.append(answers)
     secure.encrypt(answer_dict, json_file_path)
-    # with open(json_file_path, 'w', encoding="utf-8") as file:
-    #     json.dump(answer_dict, file, indent=4)
     return answer_dict
 
 
@@ -712,8 +701,8 @@ def set_up() -> dict:
         JSONDecodeError: If there is an error decoding the JSON data.
         Exception: For any other issues encountered during setup.    
     """
+    variable = {}
     try:
-        variable = {}
         json_file_path = "question.json"
         with open(json_file_path, 'r', encoding='utf-8') as file:
             data_dict = json.load(file)
@@ -733,6 +722,7 @@ def set_up() -> dict:
               json_file_path}'. Please check the file format.{RESET_COLOR}")
     except (SyntaxError, NameError, TypeError) as e:
         print(f"{ERROR_COLOR}System issue: {e}{RESET_COLOR}")
+    return variable
 
 
 def create_date() -> str:
@@ -783,6 +773,6 @@ if __name__ == "__main__":
     except EOFError:
         print('\nEOF detected - program ending')
         exit(0)
-    except (SyntaxError, NameError, TypeError) as e:
+    except (SyntaxError, NameError, TypeError, ValueError) as e:
         print(f'Error: {e}')
         exit(1)

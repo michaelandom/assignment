@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pdf_creater import PDF
+from secure_json import SecureJSON
 from service_utility import ServiceUtility
 HEADER_COLOR = "\033[95m"
 DATA_COLOR = "\033[92m"
@@ -14,6 +15,7 @@ DATE_STRING = None
 question_users = {}
 ORGANIZATION_NAME = ""
 current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+secure = SecureJSON()
 
 
 def print_table(section_answers):
@@ -38,7 +40,7 @@ def create_folder(file_name):
     that includes a timestamp.
     """
     parent_folder = get_organization_id()
-    folder_path = f"{parent_folder}/output_{current_datetime}"
+    folder_path = f"output/{parent_folder}/output_{current_datetime}"
     os.makedirs(folder_path, exist_ok=True)
     pdf_filename = os.path.join(folder_path, file_name)
     return pdf_filename
@@ -95,9 +97,7 @@ def create_pdf(section_answers, answer_dict):
 def add_chart_image_to_pdf_file():
     """
       Creates a PDF and adds a chart image to it.
-
     This function generates a PDF file and inserts the specified chart image, returning the PDF file path.
-
     """
     pdf = PDF()
     pdf.add_page()
@@ -366,11 +366,9 @@ def rank_table(categories, ranked_data, pdf):
     remaining_width = page_width - (rank_width + company_width)
     # -1 because company name is already accounted for
     category_width = remaining_width / (len(categories) - 1)
-
     # Create dynamic column widths list
     col_widths = [rank_width, company_width] + \
         [category_width] * (len(categories) - 1)
-
     # Create headers list
     headers = ['Rank', 'Company'] + [col.replace('_', ' ').title()
                                      for col in categories if col not in ['organization_name']]
@@ -490,9 +488,9 @@ def create_chart(categories, co2_emissions):
         ORGANIZATION_NAME}'
     if any(value < 0 for value in co2_emissions):
         print("Negative CO2 emissions detected. Creating a bar chart instead.")
-        plt = create_bar_chart(categories, co2_emissions, title)
+        create_bar_chart(categories, co2_emissions, title)
     else:
-        plt = create_pie_chart(categories, co2_emissions, title)
+        create_pie_chart(categories, co2_emissions, title)
     return plt
 
 
@@ -663,16 +661,15 @@ def save_user_response(response_by_section):
         **response_by_section
     }
     json_file_path = "response.json"
-    try:
-        with open(json_file_path, 'r', encoding="utf-8") as file:
-            responses_dict_list = json.load(file)
-    except FileNotFoundError:
-        responses_dict_list = []
+        # with open(json_file_path, 'r', encoding="utf-8") as file:
+        #     responses_dict_list = json.load(file)
+    responses_dict_list = secure.decrypt(json_file_path)
     responses_dict_list = [entry for entry in responses_dict_list if not (entry.get(
         "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
     responses_dict_list.append(response)
-    with open(json_file_path, 'w', encoding="utf-8") as file:
-        json.dump(responses_dict_list, file, indent=4)
+    secure.encrypt(responses_dict_list, json_file_path)
+    # with open(json_file_path, 'w', encoding="utf-8") as file:
+    #     json.dump(responses_dict_list, file, indent=4)
 
 
 def save_answers(section_answers) -> list:
@@ -689,15 +686,17 @@ def save_answers(section_answers) -> list:
     }
     json_file_path = "answer.json"
     try:
-        with open(json_file_path, 'r', encoding="utf-8") as file:
-            answer_dict = json.load(file)
-    except FileNotFoundError:
+        # with open(json_file_path, 'r', encoding="utf-8") as file:
+        #     answer_dict = json.load(file)
+        answer_dict = secure.decrypt(json_file_path)
+    except (SyntaxError, NameError, TypeError) as e:
         answer_dict = []
     answer_dict = [entry for entry in answer_dict if not (entry.get(
         "date") == DATE_STRING and entry.get("organization_id") == organization_id)]
     answer_dict.append(answers)
-    with open(json_file_path, 'w', encoding="utf-8") as file:
-        json.dump(answer_dict, file, indent=4)
+    secure.encrypt(answer_dict, json_file_path)
+    # with open(json_file_path, 'w', encoding="utf-8") as file:
+    #     json.dump(answer_dict, file, indent=4)
     return answer_dict
 
 

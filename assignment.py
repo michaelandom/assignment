@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from pdf_creater import PDF
+from pdf_creator import PDF
 from secure_json import SecureJSON
 from service_utility import ServiceUtility
 HEADER_COLOR = "\033[95m"
@@ -661,8 +661,8 @@ def save_user_response(response_by_section):
         **response_by_section
     }
     json_file_path = "response.json"
-        # with open(json_file_path, 'r', encoding="utf-8") as file:
-        #     responses_dict_list = json.load(file)
+    # with open(json_file_path, 'r', encoding="utf-8") as file:
+    #     responses_dict_list = json.load(file)
     responses_dict_list = secure.decrypt(json_file_path)
     responses_dict_list = [entry for entry in responses_dict_list if not (entry.get(
         "date") == DATE_STRING and entry.get("organization_id") == organization_id)]

@@ -199,8 +199,7 @@ def recommendations(section_answers, pdf):
 def summery_statistics(ranked_data, df, pdf, categories):
     """
     Provides comprehensive summary statistics for organizations' emissions data.
-
-    Parameters:
+    This function takes:
     ranked_data (pandas.DataFrame): Ranked emissions data for organizations
     pdf (FPDF object): PDF document to add statistics to
 

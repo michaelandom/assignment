@@ -13,11 +13,10 @@ class SecureJSON:
     def __init__(self, secret_key=None, key_path='encryption_key.key', signature_key_path='signature_key.key'):
         """
         Initialize SecureJSON with consistent key management.
-
-        Args:
-            secret_key (str, optional): Custom secret key for signing.
-            key_path (str, optional): Path to store/load encryption key.
-            signature_key_path (str, optional): Path to store/load signature key.
+        This function takes
+            secret_key: Custom secret key for signing.
+            key_path: Path to store/load encryption key.
+            signature_key_path: Path to store/load signature key.
         """
         self.key_path = key_path
         self.signature_key_path = signature_key_path
@@ -56,10 +55,9 @@ class SecureJSON:
     def encrypt(self, data, output_path):
         """
         Encrypt data and save to a file with signature.
-
-        Args:
-            data (dict): Data to encrypt
-            output_path (str): File path to save encrypted data
+        This function takes
+            data: Data to encrypt
+            output_path: File path to save encrypted data
         """
         json_string = json.dumps(data, sort_keys=True)
 
@@ -83,10 +81,8 @@ class SecureJSON:
     def decrypt(self, file_path):
         """
         Decrypt and verify data from an encrypted file.
-
-        Args:
-            file_path (str): Path to encrypted file
-
+        This function takes
+            file_path: Path to encrypted file
         Returns:
             dict: Decrypted data if signature is valid
             None: If decryption or verification fails

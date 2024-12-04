@@ -12,10 +12,8 @@ class ServiceUtility:
     def timer(func: Callable) -> Callable:
         """
         Decorator to measure and print execution time of a function.
-
-        Args:
+        This function takes:
             func (Callable): Function to be timed
-
         Returns:
             Callable: Wrapped function with timing functionality
         """
@@ -33,10 +31,8 @@ class ServiceUtility:
     def memoize(func: Callable) -> Callable:
         """
         Decorator to cache function results for repeated calls with same arguments.
-
-        Args:
+        This function takes:
             func (Callable): Function to be memoized
-
         Returns:
             Callable: Memoized function with caching
         """

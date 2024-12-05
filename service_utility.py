@@ -2,6 +2,7 @@ from typing import Dict, Any, Callable, Optional
 import time
 import functools
 
+
 class ServiceUtility:
     """
     A comprehensive utility class with methods to optimize and speed up common Python operations.
@@ -45,30 +46,39 @@ class ServiceUtility:
                 cache[key] = func(*args, **kwargs)
             return cache[key]
         return wrapper
+
     @staticmethod
     def update_text(original_text):
         """ Replace underscores with spaces and convert to lowercase then title"""
         updated_text = original_text.replace('_', ' ').lower()
         updated_text = updated_text.title()
         return updated_text
+
     @staticmethod
     def get_question(dictionary: dict, search_key: str) -> Optional[Dict[str, Any]]:
         """
-        This function takes an input dictionary and a search key, 
-        then retrieves and returns a list of questions from the dictionary 
+        This function retrieves and returns a list of questions from the dictionary 
         that match the specified criteria.
+
+        This function takes: 
+            dictionary and a search key,
+         Returns:
+            list: questions from the dictionary that match the specified criteria.
         """
         new_dictionary = {}
         for key, value in dictionary.items():
             if search_key.upper() in key.upper() and not key.endswith("_VALIDATION"):
                 new_dictionary[key] = value
         return new_dictionary
-    
+
     @staticmethod
     def section_not_completed(dictionary):
         """
-        This function takes an input dictionary and checks if the section 
-        is completed and available for the user.
+        This function validate if a section completed or not 
+        This function takes:
+            dictionary: Section
+        Returns:
+            bool: true or false 
         """
         question_count = 0
         formula_count = 0

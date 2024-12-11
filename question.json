@@ -10,7 +10,7 @@
     "WASTE_QUESTION_1": "How much waste do you generate per month in kilograms?",
     "WASTE_QUESTION_2": "How much of that waste is recycled or composted (in percentage)?",
     "WASTE_FORMULA": "((WASTE_QUESTION_1) * (12)) * ((57 - WASTE_QUESTION_2)/100)",
-    "WASTE_QUESTION_2_VALIDATION": "WASTE_QUESTION_2 > 0 and WASTE_QUESTION_2 <= 100",
+    "WASTE_QUESTION_2_VALIDATION": "WASTE_QUESTION_2 >= 0 and WASTE_QUESTION_2 <= 100",
     "WASTE_RECOMMENDATIONS": "Recommendations for Waste Reducing CO2 Emissions:\n1. Reduce: Minimize single-use items (e.g., plastic bags, straws). Opt for durable products over disposable ones.\n2. Reuse: Repurpose containers and materials instead of discarding them. Donate items you no longer need rather than throwing them away.\n3. Recycle: Familiarize yourself with local recycling programs and guidelines. Ensure materials are clean and sorted properly before recycling.\n4. Compost: Start a compost bin for organic waste (e.g., food scraps, yard waste). Use compost to enrich soil and reduce landfill waste.\n5. Educate: Raise awareness about waste reduction in your community. Share tips and resources on sustainable practices.\n6. Purchase Wisely: Buy in bulk to reduce packaging waste. Choose products with minimal or recyclable packaging.\n7. Plan Meals: Create a meal plan to avoid food waste. Store food properly to extend its shelf life.\n"
   },
   "BUSINESS_TRAVEL": {

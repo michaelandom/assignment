@@ -71,27 +71,36 @@ def create_pdf(section_answers, answer_dict):
     pdf.cell(0, 10, 'Company Rankings by Total Emissions', 0, 1)
     pdf.ln(5)
     pdf.set_font('Arial', 'B', 10)
+    df[categories] = df[categories].fillna('-')
+
+    # Aggregate and process the data
     excluded_columns = ['organization_id', 'date']
     aggregate = {
         'organization_name': 'first',
         'date': 'last',
         'TOTAL': 'sum'
     }
-    aggregate.update({category: 'sum' for category in categories})
+    aggregate.update({category: lambda x: '-' if all(x == '-') else sum(float(val)
+                     for val in x if val != '-') for category in categories})
+
     latest_data = df.sort_values('date').groupby(
         'organization_id').agg(aggregate).reset_index()
+    # latest_data[categories] = latest_data[categories].replace('-', 0)
+    pd.set_option('future.no_silent_downcasting', True)
     ranked_data = latest_data.sort_values('TOTAL', ascending=False)
     categories_for_rank_table = [
         col for col in ranked_data.columns if col not in excluded_columns]
     ranked_data = ranked_data.reset_index(drop=True)
     rank_table(categories_for_rank_table, ranked_data, pdf)
+    ranked_data[categories] = ranked_data[categories].replace(
+        '-', np.nan).infer_objects(copy=False)
     summery_statistics(ranked_data, df, pdf, categories)
     recommendations(section_answers, pdf)
     pdf_filename = create_folder('company_emissions_report.pdf')
     pdf.output(pdf_filename)
     clean_up()
     print("PDF report has been generated as 'company_emissions_report.pdf'")
-    print(f"PDF '{pdf_filename}' created successfully.")
+    print(f"PDF '{DATA_COLOR}{pdf_filename}{RESET_COLOR}' created successfully.")
 
 
 def add_chart_image_to_pdf_file():
@@ -219,31 +228,29 @@ def summery_statistics(ranked_data, df, pdf, categories):
     # Overall Summary Statistics
     overall_stats = [
         f"Total Emissions Across All Companies: {
-            ranked_data['TOTAL'].sum():,.2f}",
-        f"Average Emissions per Company: {ranked_data['TOTAL'].mean():,.2f}",
+            ranked_data['TOTAL'].sum():,.2f} CO2 (kg)",
+        f"Average Emissions per Company: {
+            ranked_data['TOTAL'].mean():,.2f} CO2 (kg)",
         f"Company with Highest Emissions: {ranked_data.iloc[0]['organization_name']} ({
-            ranked_data.iloc[0]['TOTAL']:,.2f})",
+            ranked_data.iloc[0]['TOTAL']:,.2f} CO2 (kg))",
         f"Company with Lowest Emissions: {
-            ranked_data.iloc[-1]['organization_name']} ({ranked_data.iloc[-1]['TOTAL']:,.2f})"
+            ranked_data.iloc[-1]['organization_name']} ({ranked_data.iloc[-1]['TOTAL']:,.2f} CO2 (kg))"
     ]
-
     # Add overall statistics to PDF
     for stat in overall_stats:
         pdf.cell(0, 10, stat, 0, 1)
-
     pdf.ln(5)
-
     # Detailed Breakdown by Emission Category
     for category in categories:
         category_breakdown = [
-            f"{ServiceUtility.update_text(category)
-               } - Total: {ranked_data[category].sum():,.2f}",
-            f"{ServiceUtility.update_text(category)
-               } - Average: {ranked_data[category].mean():,.2f}",
+            f"{ServiceUtility.update_text(
+                category)} - Total: {ranked_data[category].sum():,.2f} CO2 (kg)",
+            f"{ServiceUtility.update_text(
+                category)} - Average: {ranked_data[category].mean():,.2f} CO2 (kg)",
             f"{ServiceUtility.update_text(category)} - Highest Contributor: {ranked_data.loc[ranked_data[category].idxmax(
-            ), 'organization_name']} ({ranked_data[category].max():,.2f})",
+            ), 'organization_name']} ({ranked_data[category].max():,.2f} CO2 (kg))",
             f"{ServiceUtility.update_text(category)} - Lowest Contributor: {ranked_data.loc[ranked_data[category].idxmin(
-            ), 'organization_name']} ({ranked_data[category].min():,.2f})"
+            ), 'organization_name']} ({ranked_data[category].min():,.2f} CO2 (kg))"
         ]
 
         pdf.set_font('Arial', 'B', 12)
@@ -275,7 +282,6 @@ def summery_statistics(ranked_data, df, pdf, categories):
     # Key Metrics
     total_emissions = current_org_sorted['TOTAL']
     dates = current_org_sorted['date']
-
     # Breakdown by Emission Categories
     category_breakdown = {}
     category_breakdown.update(
@@ -287,11 +293,10 @@ def summery_statistics(ranked_data, df, pdf, categories):
         f"Total Historical Data Points: {len(current_org_sorted)}",
         f"Date Range: {dates.min()} to {dates.max()}",
         f"Lowest Total Emissions: {total_emissions.min(
-        ):,.2f} (on {dates.iloc[total_emissions.argmin()]})",
+        ):,.2f} (on {dates.iloc[total_emissions.argmin()]} CO2 (kg))",
         f"Highest Total Emissions: {total_emissions.max(
-        ):,.2f} (on {dates.iloc[total_emissions.argmax()]})"
+        ):,.2f} (on {dates.iloc[total_emissions.argmax()]} CO2 (kg))"
     ]
-
     # Percentage Changes
     pct_changes = total_emissions.pct_change() * 100
 
@@ -300,10 +305,10 @@ def summery_statistics(ranked_data, df, pdf, categories):
     for category, values in category_breakdown.items():
         category_pct_changes = values.pct_change() * 100
         category_stats.extend([
-            f"{category} - Lowest: {values.min():,.2f}",
-            f"{category} - Highest: {values.max():,.2f}",
-            f"{category} - Average: {values.mean():,.2f}",
-            f"{category} - Change Volatility: {category_pct_changes.std():,.2f}%"
+            f"{category} - Lowest: {values.min():,.2f} CO2 (kg)",
+            f"{category} - Highest: {values.max():,.2f} CO2 (kg)",
+            f"{category} - Average: {values.mean():,.2f} CO2 (kg)",
+            f"{category} - Change Volatility: {f"{category_pct_changes.std():,.2f}" if not pd.isna(category_pct_changes.std()) else 0}%"
         ])
 
     # Performance Comparison
@@ -314,7 +319,8 @@ def summery_statistics(ranked_data, df, pdf, categories):
             'Above' if org_mean > overall_mean else 'Below'} "
         f"(Difference: {abs(org_mean - overall_mean):,.2f}, "
         f"{abs(org_mean - overall_mean) / overall_mean * 100:,.2f}%)",
-        f"Emissions Trend Volatility: {pct_changes.std():,.2f}%"
+        f"Emissions Trend Volatility: {
+            f"{pct_changes.std():,.2f}" if not pd.isna(pct_changes.std()) else 0}%"
     ]
 
     # Additional Trend Analysis
@@ -359,9 +365,9 @@ def rank_table(categories, ranked_data, pdf):
     This function takes input categories and ranked data to create a PDF table 
     showing the organization's rank with total emissions in descending order.
     """
-    page_width = pdf.w - 20
-    rank_width = 15
-    company_width = 35
+    page_width = pdf.w - 15
+    rank_width = 10
+    company_width = 25
     remaining_width = page_width - (rank_width + company_width)
     # -1 because company name is already accounted for
     category_width = remaining_width / (len(categories) - 1)
@@ -371,7 +377,7 @@ def rank_table(categories, ranked_data, pdf):
     headers = ['Rank', 'Company'] + [col.replace('_', ' ').title()
                                      for col in categories if col not in ['organization_name']]
 
-    pdf.set_font('Arial', 'B', 10)
+    pdf.set_font('Arial', 'B', 7)
     for i, header in enumerate(headers):
         pdf.cell(col_widths[i], 10, str(header), 1)
     pdf.ln()

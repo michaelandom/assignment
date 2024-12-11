@@ -1,0 +1,344 @@
+[
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 200,
+            "BUSINESS_TRAVEL_QUESTION_2": 20
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 200,
+            "ENERGY_USAGE_QUESTION_2": 200,
+            "ENERGY_USAGE_QUESTION_3": 200
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 200,
+            "WASTE_QUESTION_2": 20
+        },
+        "date": "2023-12-01",
+        "organization_id": "org_a",
+        "organization_name": "org a"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 2,
+            "BUSINESS_TRAVEL_QUESTION_2": 3
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 200,
+            "ENERGY_USAGE_QUESTION_2": 244,
+            "ENERGY_USAGE_QUESTION_3": 233
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 50,
+            "WASTE_QUESTION_2": 2
+        },
+        "date": "2023-12-01",
+        "organization_id": "org_c",
+        "organization_name": "org c"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 23,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 200,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2023-12-01",
+        "organization_id": "org_d",
+        "organization_name": "org d"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 23,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 345,
+            "ENERGY_USAGE_QUESTION_2": 232,
+            "ENERGY_USAGE_QUESTION_3": 12
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 122,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2023-12-01",
+        "organization_id": "org_e",
+        "organization_name": "org e"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 2332,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 234,
+            "ENERGY_USAGE_QUESTION_2": 234,
+            "ENERGY_USAGE_QUESTION_3": 324
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 2,
+            "WASTE_QUESTION_2": 3
+        },
+        "date": "2023-12-01",
+        "organization_id": "org_f",
+        "organization_name": "org f"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 12,
+            "BUSINESS_TRAVEL_QUESTION_2": 12
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 232,
+            "ENERGY_USAGE_QUESTION_2": 1213,
+            "ENERGY_USAGE_QUESTION_3": 1231
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 214,
+            "WASTE_QUESTION_2": 21
+        },
+        "date": "2022-12-01",
+        "organization_id": "org_g",
+        "organization_name": "org g"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 345,
+            "BUSINESS_TRAVEL_QUESTION_2": 34
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 2143,
+            "ENERGY_USAGE_QUESTION_2": 345,
+            "ENERGY_USAGE_QUESTION_3": 21
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2023-12-01",
+        "organization_id": "org_h",
+        "organization_name": "org h"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 34,
+            "BUSINESS_TRAVEL_QUESTION_2": 45
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 234,
+            "ENERGY_USAGE_QUESTION_2": 456,
+            "ENERGY_USAGE_QUESTION_3": 456
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 45,
+            "WASTE_QUESTION_2": 3
+        },
+        "date": "2024-12-01",
+        "organization_id": "org_a",
+        "organization_name": "org a"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 23,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 2
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 590,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2024-12-01",
+        "organization_id": "org_i",
+        "organization_name": "org i"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 5000,
+            "BUSINESS_TRAVEL_QUESTION_2": 12
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 231,
+            "ENERGY_USAGE_QUESTION_2": 232,
+            "ENERGY_USAGE_QUESTION_3": 345
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 1277,
+            "WASTE_QUESTION_2": 28
+        },
+        "date": "2022-12-01",
+        "organization_id": "org_a",
+        "organization_name": "org a"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 23,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 1,
+            "ENERGY_USAGE_QUESTION_2": 1,
+            "ENERGY_USAGE_QUESTION_3": 1
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 20,
+            "WASTE_QUESTION_2": 25
+        },
+        "date": "2022-12-01",
+        "organization_id": "org_e",
+        "organization_name": "org e"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 500,
+            "BUSINESS_TRAVEL_QUESTION_2": 10
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2021-12-01",
+        "organization_id": "org_d",
+        "organization_name": "org d"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 500,
+            "BUSINESS_TRAVEL_QUESTION_2": 10
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2024-12-01",
+        "organization_id": "org_c",
+        "organization_name": "org c"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 500,
+            "BUSINESS_TRAVEL_QUESTION_2": 1
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2024-12-01",
+        "organization_id": "org_f",
+        "organization_name": "org f"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 234,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2023-12-01",
+        "organization_id": "org_b",
+        "organization_name": "org b"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 234,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2024-12-01",
+        "organization_id": "org_b",
+        "organization_name": "org b"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 100,
+            "BUSINESS_TRAVEL_QUESTION_2": 2
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 2
+        },
+        "date": "2024-12-01",
+        "organization_id": "org_e",
+        "organization_name": "org e"
+    },
+    {
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 23,
+            "BUSINESS_TRAVEL_QUESTION_2": 23
+        },
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 23,
+            "ENERGY_USAGE_QUESTION_2": 23,
+            "ENERGY_USAGE_QUESTION_3": 23
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 23,
+            "WASTE_QUESTION_2": 23
+        },
+        "date": "2024-12-01",
+        "organization_id": "org_g",
+        "organization_name": "org g"
+    },
+    {
+        "organization_id": "org_g",
+        "organization_name": "org g",
+        "date": "2023-12-01",
+        "ENERGY_USAGE": {
+            "ENERGY_USAGE_QUESTION_1": 12,
+            "ENERGY_USAGE_QUESTION_2": 12,
+            "ENERGY_USAGE_QUESTION_3": 12
+        },
+        "WASTE": {
+            "WASTE_QUESTION_1": 12,
+            "WASTE_QUESTION_2": 12
+        },
+        "BUSINESS_TRAVEL": {
+            "BUSINESS_TRAVEL_QUESTION_1": 12,
+            "BUSINESS_TRAVEL_QUESTION_2": 12
+        }
+    }
+]

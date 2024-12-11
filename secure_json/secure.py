@@ -77,6 +77,9 @@ class SecureJSON:
 
         with open(output_path, 'w',  encoding="utf-8") as file:
             json.dump(payload, file)
+       # This is for you to see not encrypt data that the only use of the file   
+        with open(f"not_encrypt_file_for_you_to_see_{output_path}", 'w',  encoding="utf-8") as file:
+            json.dump(data, file, indent=4)
 
     def decrypt(self, file_path):
         """

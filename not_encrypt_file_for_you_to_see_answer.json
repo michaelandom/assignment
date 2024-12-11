@@ -1,0 +1,173 @@
+[
+    {
+        "BUSINESS_TRAVEL": 23.1,
+        "ENERGY_USAGE": 5581.92,
+        "TOTAL": 6493.02,
+        "WASTE": 888.0,
+        "date": "2023-12-01",
+        "organization_id": "org_a",
+        "organization_name": "org a"
+    },
+    {
+        "BUSINESS_TRAVEL": 1.54,
+        "ENERGY_USAGE": 6503.44,
+        "TOTAL": 6834.98,
+        "WASTE": 330.0,
+        "date": "2023-12-01",
+        "organization_id": "org_c",
+        "organization_name": "org c"
+    },
+    {
+        "BUSINESS_TRAVEL": 2.31,
+        "ENERGY_USAGE": 642.98,
+        "TOTAL": 739.13,
+        "WASTE": 93.84,
+        "date": "2023-12-01",
+        "organization_id": "org_d",
+        "organization_name": "org d"
+    },
+    {
+        "BUSINESS_TRAVEL": 2.31,
+        "ENERGY_USAGE": 350.91,
+        "TOTAL": 850.98,
+        "WASTE": 497.76,
+        "date": "2023-12-01",
+        "organization_id": "org_e",
+        "organization_name": "org e"
+    },
+    {
+        "BUSINESS_TRAVEL": 234.21,
+        "ENERGY_USAGE": 9036.45,
+        "TOTAL": 9283.62,
+        "WASTE": 12.96,
+        "date": "2023-12-01",
+        "organization_id": "org_f",
+        "organization_name": "org f"
+    },
+    {
+        "BUSINESS_TRAVEL": 2.31,
+        "ENERGY_USAGE": 34349.58,
+        "TOTAL": 35276.37,
+        "WASTE": 924.48,
+        "date": "2022-12-01",
+        "organization_id": "org_g",
+        "organization_name": "org g"
+    },
+    {
+        "BUSINESS_TRAVEL": 23.44,
+        "ENERGY_USAGE": 619.44,
+        "TOTAL": 736.72,
+        "WASTE": 93.84,
+        "date": "2023-12-01",
+        "organization_id": "org_h",
+        "organization_name": "org h"
+    },
+    {
+        "BUSINESS_TRAVEL": 1.75,
+        "ENERGY_USAGE": 12725.45,
+        "TOTAL": 13018.8,
+        "WASTE": 291.6,
+        "date": "2024-12-01",
+        "organization_id": "org_a",
+        "organization_name": "org a"
+    },
+    {
+        "BUSINESS_TRAVEL": 2.31,
+        "ENERGY_USAGE": 57.28,
+        "TOTAL": 2466.79,
+        "WASTE": 2407.2,
+        "date": "2024-12-01",
+        "organization_id": "org_i",
+        "organization_name": "org i"
+    },
+    {
+        "BUSINESS_TRAVEL": 962.5,
+        "ENERGY_USAGE": 9620.94,
+        "TOTAL": 15027.4,
+        "WASTE": 4443.96,
+        "date": "2022-12-01",
+        "organization_id": "org_a",
+        "organization_name": "org a"
+    },
+    {
+        "BUSINESS_TRAVEL": 2.31,
+        "ENERGY_USAGE": 27.91,
+        "TOTAL": 107.02,
+        "WASTE": 76.8,
+        "date": "2022-12-01",
+        "organization_id": "org_e",
+        "organization_name": "org e"
+    },
+    {
+        "BUSINESS_TRAVEL": 115.5,
+        "ENERGY_USAGE": 641.92,
+        "TOTAL": 851.26,
+        "WASTE": 93.84,
+        "date": "2021-12-01",
+        "organization_id": "org_d",
+        "organization_name": "org d"
+    },
+    {
+        "BUSINESS_TRAVEL": 115.5,
+        "ENERGY_USAGE": 641.92,
+        "TOTAL": 851.26,
+        "WASTE": 93.84,
+        "date": "2024-12-01",
+        "organization_id": "org_c",
+        "organization_name": "org c"
+    },
+    {
+        "BUSINESS_TRAVEL": 1155.0,
+        "ENERGY_USAGE": 641.92,
+        "TOTAL": 1890.76,
+        "WASTE": 93.84,
+        "date": "2024-12-01",
+        "organization_id": "org_f",
+        "organization_name": "org f"
+    },
+    {
+        "BUSINESS_TRAVEL": 23.5,
+        "ENERGY_USAGE": 641.92,
+        "TOTAL": 759.26,
+        "WASTE": 93.84,
+        "date": "2023-12-01",
+        "organization_id": "org_b",
+        "organization_name": "org b"
+    },
+    {
+        "BUSINESS_TRAVEL": 23.5,
+        "ENERGY_USAGE": 641.92,
+        "TOTAL": 759.26,
+        "WASTE": 93.84,
+        "date": "2024-12-01",
+        "organization_id": "org_b",
+        "organization_name": "org b"
+    },
+    {
+        "BUSINESS_TRAVEL": 115.5,
+        "ENERGY_USAGE": 641.92,
+        "TOTAL": 909.22,
+        "WASTE": 151.8,
+        "date": "2024-12-01",
+        "organization_id": "org_e",
+        "organization_name": "org e"
+    },
+    {
+        "BUSINESS_TRAVEL": 2.31,
+        "ENERGY_USAGE": 641.92,
+        "TOTAL": 738.07,
+        "WASTE": 93.84,
+        "date": "2024-12-01",
+        "organization_id": "org_g",
+        "organization_name": "org g"
+    },
+    {
+        "organization_id": "org_g",
+        "organization_name": "org g",
+        "date": "2023-12-01",
+        "ENERGY_USAGE": 334.92,
+        "WASTE": 64.8,
+        "BUSINESS_TRAVEL": 2.31,
+        "TOTAL": 402.03
+    }
+]

@@ -77,16 +77,17 @@ def create_pdf(section_answers, answer_dict):
     excluded_columns = ['organization_id', 'date']
     aggregate = {
         'organization_name': 'first',
-        'date': 'last',
-        'TOTAL': 'sum'
+        'date': 'last'
     }
     aggregate.update({category: lambda x: '-' if all(x == '-') else sum(float(val)
                      for val in x if val != '-') for category in categories})
-
+    # Adding TOTAL at last just for order  
+    aggregate.update({'TOTAL': 'sum'})
     latest_data = df.sort_values('date').groupby(
         'organization_id').agg(aggregate).reset_index()
     # latest_data[categories] = latest_data[categories].replace('-', 0)
     pd.set_option('future.no_silent_downcasting', True)
+    pdf.add_page()
     ranked_data = latest_data.sort_values('TOTAL', ascending=False)
     categories_for_rank_table = [
         col for col in ranked_data.columns if col not in excluded_columns]
@@ -381,23 +382,30 @@ def rank_table(categories, ranked_data, pdf):
     for i, header in enumerate(headers):
         pdf.cell(col_widths[i], 10, str(header), 1)
     pdf.ln()
-
     pdf.set_font('Arial', '', 10)
     for idx, row in ranked_data.iterrows():
         # Calculate rank (idx + 1 since indexing starts at 0)
         rank = idx + 1
-
-        pdf.cell(col_widths[0], 10, str(rank), 1)
-
-        pdf.cell(col_widths[1], 10, str(row['organization_name']), 1)
-
+        is_current_org = (row['organization_id'] == get_organization_id())
+        
+        # Set font based on whether this is the current organization
+        if is_current_org:
+            pdf.set_font('Arial', 'B', 10)
+            pdf.set_fill_color(173, 216, 230)
+            fill_flag = 1
+        else:
+            pdf.set_font('Arial', '', 10)
+            fill_flag = 0
+        pdf.cell(col_widths[0], 10, str(rank), 1, 0, 'L', fill_flag)
+        pdf.cell(col_widths[1], 10, str(row['organization_name']), 1, 0, 'L', fill_flag)
+        
         # Print all other categories dynamically
         for category in categories:
             if category not in ['organization_name']:
                 value = row[category]
                 formatted_value = f"{value:,.2f}" if isinstance(
                     value, (int, float)) else str(value)
-                pdf.cell(category_width, 10, formatted_value, 1)
+                pdf.cell(category_width, 10, formatted_value, 1, 0, 'L', fill_flag)
         pdf.ln()
     pdf.ln(5)
     pdf.set_font('Arial', 'I', 8)
@@ -443,7 +451,6 @@ def create_pie_chart(categories, co2_emissions, title):
 
     plt.figure(figsize=(10, 6))
     wedges, texts, auto_texts = plt.pie(co2_emissions,
-                                        labels=categories,
                                         autopct='%1.1f%%',
                                         startangle=90,
                                         explode=explode,

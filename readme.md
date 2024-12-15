@@ -29,6 +29,9 @@ This is a prototype (MVP) Console Application for Carbon Footprint Monitoring de
 
 ## 🛠 Technical Specifications
 
+## PDF example file
+PDF Output: [https://drive.google.com/file/d/1qQ_DQrSdVJvNgK68Q_6e-dep4h6ka9cj/view?usp=sharing] (https://drive.google.com/file/d/1qQ_DQrSdVJvNgK68Q_6e-dep4h6ka9cj/view?usp=sharing)
+
 ### Prerequisites
 - **Python Version**: 3.12+
 - **Required Libraries**:

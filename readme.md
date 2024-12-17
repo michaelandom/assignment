@@ -30,8 +30,7 @@ This is a prototype (MVP) Console Application for Carbon Footprint Monitoring de
 ### PDF Example File
 PDF Output: [https://drive.google.com/file/d/1qQ_DQrSdVJvNgK68Q_6e-dep4h6ka9cj/view?usp=sharing](https://drive.google.com/file/d/1qQ_DQrSdVJvNgK68Q_6e-dep4h6ka9cj/view?usp=sharing)
 
-PDF Output with New section for test:[https://drive.google.com/file/d/1Lf04oC0dfmE8SHJNCTzh7ulQJgSyfYB4/view?usp=sharing]
-(https://drive.google.com/file/d/1Lf04oC0dfmE8SHJNCTzh7ulQJgSyfYB4/view?usp=sharing)
+PDF Output with New section for test: [https://drive.google.com/file/d/1NHTz6c2TuNaJX0J1pqZSt6GI504uLnRx/view?usp=sharing](https://drive.google.com/file/d/1NHTz6c2TuNaJX0J1pqZSt6GI504uLnRx/view?usp=sharing)
 
 ## 🛠 Technical Specifications
 ### Prerequisites

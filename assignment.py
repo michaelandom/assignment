@@ -797,6 +797,6 @@ if __name__ == "__main__":
     except EOFError:
         print('\nEOF detected - program ending')
         exit(0)
-    # except (SyntaxError, NameError, TypeError, ValueError) as e:
-    #     # print(f'Error: {e}')
-    #     exit(1)
+    except (SyntaxError, NameError, TypeError, ValueError) as e:
+        print(f'Error: {e}')
+        exit(1)

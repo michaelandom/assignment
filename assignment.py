@@ -304,13 +304,26 @@ def summery_statistics(ranked_data, df, pdf, categories):
     # Emission Category Analysis
     category_stats = []
     for category, values in category_breakdown.items():
-        category_pct_changes = values.pct_change() * 100
-        category_stats.extend([
-            f"{category} - Lowest: {values.min():,.2f} CO2 (kg)",
-            f"{category} - Highest: {values.max():,.2f} CO2 (kg)",
-            f"{category} - Average: {values.mean():,.2f} CO2 (kg)",
-            f"{category} - Change Volatility: {f"{category_pct_changes.std():,.2f}" if not pd.isna(category_pct_changes.std()) else 0}%"
-        ])
+            numeric_values = pd.to_numeric(values, errors='coerce')
+    
+            # Filter out NaN values
+            clean_values = numeric_values.dropna()
+            
+            if not clean_values.empty:
+                # Calculate percentage changes only on clean numeric values
+                category_pct_changes = clean_values.pct_change() * 100
+                
+                category_stats.extend([
+                    f"{category} - Lowest: {clean_values.min():,.2f} CO2 (kg)",
+                    f"{category} - Highest: {clean_values.max():,.2f} CO2 (kg)",
+                    f"{category} - Average: {clean_values.mean():,.2f} CO2 (kg)",
+                    f"{category} - Change Volatility: {category_pct_changes.std():,.2f}%" if not pd.isna(category_pct_changes.std()) else f"{category} - Change Volatility: 0%"
+                ])
+            else:
+                # Fallback for categories with no data
+                category_stats.extend([
+                    f"{category} - No data available"
+                ])
 
     # Performance Comparison
     overall_mean = ranked_data['TOTAL'].mean()
@@ -784,6 +797,6 @@ if __name__ == "__main__":
     except EOFError:
         print('\nEOF detected - program ending')
         exit(0)
-    except (SyntaxError, NameError, TypeError, ValueError) as e:
-        print(f'Error: {e}')
-        exit(1)
+    # except (SyntaxError, NameError, TypeError, ValueError) as e:
+    #     # print(f'Error: {e}')
+    #     exit(1)

@@ -43,13 +43,24 @@ PDF Output with New section for test: [https://drive.google.com/file/d/1NHTz6c2T
 
 ### Installation
 
-```bash
+```bash 
 # Clone the repository
 git clone https://github.com/michaelandom/assignment.git
 
+# Use Python version 3.12
+
 # Create virtual environment
 python3.12 -m venv venv
+
+# Mac/Linux
 source venv/bin/activate
+
+# Windows Command Prompt
+venv\Scripts\activate 
+
+# Windows PowerShell
+.\venv\Scripts\activate
+
 
 # Install dependencies
 pip install -r requirements.txt
